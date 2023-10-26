@@ -1,0 +1,18 @@
+{
+  "fornecedores": [
+    {
+      "id": 1,
+      "nome": "Fornecedor 1",
+      "contato": "11998989898",
+      "cnpj": "12345678901234",
+      "id_endereco": 1
+    },
+    {
+      "id": 2,
+      "nome": "Fornecedor 2",
+      "contato": "11998989898",
+      "cnpj": "12345678901234",
+      "id_endereco": 2
+    }
+  ]
+}
