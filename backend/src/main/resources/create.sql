@@ -84,3 +84,39 @@ INSERT INTO TIPO_USUARIO VALUES(1, 'ESTOQUE', 'Funcionario do estoque com acesso
 INSERT INTO TIPO_USUARIO VALUES(2, 'GERENTE', 'Funcionario nivel gerente do estoque com acesso total');
 INSERT INTO TIPO_USUARIO VALUES(3, 'COMUM', ' Funcionario comum da empresa que possui acesso a abertura de pedido');
 INSERT INTO TIPO_USUARIO VALUES(4, 'SUPORTE', 'Operador do suporte ao usuário do sistema');
+
+------------------------------------------------------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION verificaTipoPedido(pedido_id bigint) RETURNS integer AS $$
+DECLARE tipo character varying := (SELECT dtype FROM pedidos WHERE id = pedido_id);
+BEGIN
+	IF (tipo = 'PedidoSaidaEstoque')
+		THEN RETURN 1;
+	END IF;
+
+	RETURN 0;
+END;
+$$ language plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION asseguraTemQuantidade() RETURNS trigger AS $$
+BEGIN
+	IF (NEW.quantidade > (SELECT qnt_estoque FROM produtos WHERE id = NEW.produto_id))
+		THEN RAISE EXCEPTION 'QUANTIDADE A SER RETIRADA MAIOR DO QUE EXISTENTE EM ESTOQUE!' ;
+	END IF;
+
+	IF (NEW.quantidade <= (SELECT qnt_estoque FROM produtos WHERE id = NEW.produto_id))
+		THEN UPDATE produtos SET qnt_estoque = produtos.qnt_estoque - NEW.quantidade WHERE produtos.id = NEW.produto_id;
+		RETURN NEW;
+	END IF;
+END;
+$$ language plpgsql;
+
+
+--TRIGGER para garantir que nao crie um pedido de saida com mais produtos do que existente em estoque
+CREATE OR REPLACE TRIGGER trg_qnt_estoque
+BEFORE INSERT ON item_pedido
+FOR EACH ROW
+	WHEN(verificaTipoPedido(NEW.pedido_id) = 1)
+		EXECUTE FUNCTION asseguraTemQuantidade();
