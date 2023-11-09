@@ -114,9 +114,45 @@ END;
 $$ language plpgsql;
 
 
---TRIGGER para garantir que nao crie um pedido de saida com mais produtos do que existente em estoque
+--TODO arrumar esse trigger
+CREATE OR REPLACE FUNCTION asseguraTemQuantidadeUpdate() RETURNS trigger AS $$
+BEGIN
+--quantidade adicionada (qnt_nova - qnt_antiga, quando qnt_nova>qnt_antiga) > quantidade em estoque: erro
+	IF (NEW.quantidade > (SELECT quantidade FROM item_pedido WHERE id = NEW.id) AND (
+			(NEW.quantidade - (SELECT quantidade FROM item_pedido WHERE id = NEW.id)) > (SELECT qnt_estoque FROM produtos WHERE id = NEW.produto_id)))
+		THEN RAISE EXCEPTION 'QUANTIDADE A SER RETIRADA MAIOR DO QUE EXISTENTE EM ESTOQUE!' ;
+	END IF;
+
+--quantidade retirada (qnt_antiga - qnt_nova, quando qnt_nova<qnt_antiga) < quantidade em estoque: adicionar no estoque quantidade retirada do pedido
+	IF (NEW.quantidade < (SELECT quantidade FROM item_pedido WHERE id = NEW.id) AND (
+			((SELECT quantidade FROM item_pedido WHERE id = NEW.id) - NEW.quantidade) < (SELECT qnt_estoque FROM produtos WHERE id = NEW.produto_id)))
+		THEN UPDATE produtos SET qnt_estoque = produtos.qnt_estoque + ((SELECT quantidade FROM item_pedido WHERE id = NEW.id) - NEW.quantidade) WHERE produtos.id = NEW.produto_id;
+	END IF;
+
+--quantidade adicionada (qnt_nova - qnt_antiga, quando qnt_nova>qnt_antiga) <= quantidade em estoque: retirar do estoque quantidade adicionada no pedido
+	IF (NEW.quantidade > (SELECT quantidade FROM item_pedido WHERE id = NEW.id) AND (
+			(NEW.quantidade - (SELECT quantidade FROM item_pedido WHERE id = NEW.id)) <= (SELECT qnt_estoque FROM produtos WHERE id = NEW.produto_id)))
+		THEN UPDATE produtos SET qnt_estoque = produtos.qnt_estoque - NEW.quantidade WHERE produtos.id = NEW.produto_id;
+		RETURN NEW;
+	END IF;
+END;
+$$ language plpgsql;
+
+
+
+--TRIGGER para garantir que nao crie um pedido de saida com mais produtos do que existente em estoque NA INSERÇÃO
 CREATE OR REPLACE TRIGGER trg_qnt_estoque
 BEFORE INSERT ON item_pedido
 FOR EACH ROW
 	WHEN(verificaTipoPedido(NEW.pedido_id) = 1)
 		EXECUTE FUNCTION asseguraTemQuantidade();
+
+
+
+--TRIGGER para garantir que nao crie um pedido de saida com mais produtos do que existente em estoque NA ATUALIZAÇÃO
+--garante tambem que quando a quantidade eh alterada para menor do que antes, retorne ao estoque os produtos
+CREATE OR REPLACE TRIGGER trg_qnt_estoque_update
+BEFORE UPDATE ON item_pedido
+FOR EACH ROW
+	WHEN(verificaTipoPedido(NEW.pedido_id) = 1)
+		EXECUTE FUNCTION asseguraTemQuantidadeUpdate();
