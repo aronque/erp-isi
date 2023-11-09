@@ -10,8 +10,4 @@ import java.util.List;
 
 @Repository
 public interface ItemPedidoRepository extends JpaRepository<ItemPedido, Long> {
-
-    @Query("SELECT i FROM ItemPedido i WHERE i.id = :#{#item.getId} OR i.produto = :#{#item.getProduto} OR i.pedido = :#{#item.getPedido}")
-    public List<ItemPedido> findByCriteria(@Param("item") ItemPedido item);
-
 }

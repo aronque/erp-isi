@@ -45,7 +45,7 @@ public class UsuarioCRUDServiceImpl implements CRUDService {
         aux.setNome(obj[1] != null ? obj[1].toString() : null);
         aux.setEmail(obj[2] != null ? obj[2].toString() : null);
         aux.setTipo(obj[4] != null ? Usuario.Tipo.valueOf(obj[4].toString()) : null);
-        return repository.findByCriteria(aux);
+        return repository.findBy(aux);
     }
 
     @Override

@@ -10,8 +10,4 @@ import java.util.List;
 
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
-
-    @Query("SELECT p FROM Produto p WHERE p.id = :#{#produto.getId} OR p.nome = :#{#produto.getNome} OR p.fornecedor = :#{#produto.getFornecedor} ")
-    public List<Produto> findByCriteria(@Param("produto") Produto produto);
-
 }

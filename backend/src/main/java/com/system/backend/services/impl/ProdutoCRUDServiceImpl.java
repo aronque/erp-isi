@@ -47,7 +47,7 @@ public class ProdutoCRUDServiceImpl implements CRUDService {
         aux.setFornecedor(obj[2] != null ? (Fornecedor) obj[2] : null);
         aux.setQuantidade(obj[3] != null ? (Integer) obj[3] : null);
         aux.setPreco(obj[4] != null ? (Double) obj[4] : null);
-        return repository.findByCriteria(aux);
+        return repository.findBy(aux);
     }
 
     @Override

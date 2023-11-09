@@ -1,17 +1,13 @@
 package com.system.backend.services.impl;
 
 import com.system.backend.entities.*;
-import com.system.backend.repositories.EnderecoRepository;
-import com.system.backend.repositories.ItemPedidoRepository;
 import com.system.backend.repositories.PedidoRepository;
 import com.system.backend.services.CRUDService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Component("Pedido")
 public class PedidoCRUDServiceImpl implements CRUDService {
@@ -19,9 +15,6 @@ public class PedidoCRUDServiceImpl implements CRUDService {
 
     @Autowired
     private PedidoRepository repository;
-
-    @Autowired
-    private ItemPedidoRepository itemPedidoRepository;
 
     @Override
     public Object create(Object[] obj) {

@@ -47,7 +47,7 @@ public class FornecedorCRUDServiceImpl implements CRUDService {
         aux.setCnpj(obj[2] != null ? obj[2].toString() : null);
         aux.setContato(obj[3] != null ? obj[3].toString() : null);
         aux.setEndereco(obj[4] != null ?  (Endereco) obj[4] : null);
-        return repository.findByCriteria(aux);
+        return repository.findBy(aux);
     }
 
     @Override
