@@ -14,4 +14,6 @@ public interface CRUDService {
     public Object filter(Object[] obj);
 
     public Object filterAll();
+
+    public Object filterAll(Object[] obj);
 }

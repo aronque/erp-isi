@@ -29,11 +29,14 @@ public class ProdutoCRUDServiceImpl implements CRUDService {
     @Override
     public void update(Object[] obj) {
         Produto aux = new Produto();
+        aux.setId(obj[0] != null ? (Long) obj[0] : null);
         aux.setNome(obj[1] != null ? obj[1].toString() : null);
         aux.setFornecedor(obj[2] != null ? (Fornecedor) obj[2] : null);
         aux.setQuantidade(obj[3] != null ? (Integer) obj[3] : null);
         aux.setPreco(obj[4] != null ? (Double) obj[4] : null);
-        repository.save(aux);
+        if(repository.existsById(aux.getId())) {
+            repository.save(aux);
+        }
     }
 
     @Override
@@ -61,5 +64,10 @@ public class ProdutoCRUDServiceImpl implements CRUDService {
         aux.setQuantidade(obj[3] != null ? (Integer) obj[3] : null);
         aux.setPreco(obj[4] != null ? (Double) obj[4] : null);
         repository.delete(aux);
+    }
+
+    @Override
+    public Object filterAll(Object[] obj) {
+        return null;
     }
 }

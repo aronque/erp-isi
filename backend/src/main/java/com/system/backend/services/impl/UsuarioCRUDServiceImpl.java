@@ -28,7 +28,7 @@ public class UsuarioCRUDServiceImpl implements CRUDService {
     @Override
     public void update(Object[] obj) {
         Usuario aux = new Usuario();
-        aux.setId(Long.valueOf(obj[0].toString()));
+        aux.setId(obj[0] != null ? (Long) obj[0] : null);
         aux.setNome(obj[1] != null ? obj[1].toString() : null);
         aux.setEmail(obj[2] != null ? obj[2].toString() : null);
         aux.setSenha(obj[3] != null ? obj[3].toString() : null);
@@ -41,6 +41,7 @@ public class UsuarioCRUDServiceImpl implements CRUDService {
     @Override
     public List<Usuario> filter(Object[] obj) {
         Usuario aux = new Usuario();
+        aux.setId(obj[0] != null ? Long.valueOf(obj[0].toString()) : null);
         aux.setNome(obj[1] != null ? obj[1].toString() : null);
         aux.setEmail(obj[2] != null ? obj[2].toString() : null);
         aux.setTipo(obj[4] != null ? Usuario.Tipo.valueOf(obj[4].toString()) : null);
@@ -61,5 +62,10 @@ public class UsuarioCRUDServiceImpl implements CRUDService {
         aux.setSenha(obj[3] != null ? obj[3].toString() : null);
         aux.setTipo(obj[4] != null ? Usuario.Tipo.valueOf(obj[4].toString()) : null);
         repository.delete(aux);
+    }
+
+    @Override
+    public Object filterAll(Object[] obj) {
+        return null;
     }
 }

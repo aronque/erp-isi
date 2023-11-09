@@ -29,11 +29,14 @@ public class FornecedorCRUDServiceImpl implements CRUDService {
     @Override
     public void update(Object[] obj) {
         Fornecedor aux = new Fornecedor();
+        aux.setId(obj[0] != null ? (Long) obj[0] : null);
         aux.setNome(obj[1] != null ? obj[1].toString() : null);
         aux.setCnpj(obj[2] != null ? obj[2].toString() : null);
         aux.setContato(obj[3] != null ? obj[3].toString() : null);
         aux.setEndereco(obj[4] != null ?  (Endereco) obj[4] : null);
-        repository.save(aux);
+        if(repository.existsById(aux.getId())) {
+            repository.save(aux);
+        }
     }
 
     @Override
@@ -61,5 +64,10 @@ public class FornecedorCRUDServiceImpl implements CRUDService {
         aux.setContato(obj[3] != null ? obj[3].toString() : null);
         aux.setEndereco(obj[4] != null ?  (Endereco) obj[4] : null);
         repository.delete(aux);
+    }
+
+    @Override
+    public Object filterAll(Object[] obj) {
+        return null;
     }
 }
