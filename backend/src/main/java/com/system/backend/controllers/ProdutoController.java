@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -46,13 +47,15 @@ public class ProdutoController {
 
     @PutMapping("/update")
     public ResponseEntity updateProduto(@RequestBody Produto produto) {
+        Produto produtoAux;
         Object[] objAux = new Object[5];
         objAux[0] = produto.getId();
-        objAux[1] = produto.getNome();
-        objAux[2] = produto.getFornecedor();
-        objAux[3] = produto.getQuantidade();
-        objAux[4] = produto.getPreco();
+
+        produtoAux = (Produto) ((ArrayList<?>) crudService.filter(objAux)).get(0);
+
+        setUpdatedFields(objAux, produto, produtoAux);
         crudService.update(objAux);
+
         return ResponseEntity.ok().build();
     }
 
@@ -68,4 +71,10 @@ public class ProdutoController {
         return ResponseEntity.ok().build();
     }
 
+    private void setUpdatedFields(Object[] objAux, Produto produtoParam, Produto produtoAux) {
+        objAux[1] = produtoParam.getNome() != null ? produtoParam.getNome() : produtoAux.getNome();
+        objAux[2] = produtoParam.getFornecedor() != null ? produtoParam.getFornecedor() : produtoAux.getFornecedor();
+        objAux[3] = produtoParam.getQuantidade() != null ? produtoParam.getQuantidade() : produtoAux.getQuantidade();
+        objAux[4] = produtoParam.getPreco() != null ? produtoParam.getPreco() : produtoAux.getPreco();
+    }
 }
