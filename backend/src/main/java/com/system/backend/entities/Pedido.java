@@ -1,12 +1,12 @@
 package com.system.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "PEDIDOS")
@@ -19,8 +19,8 @@ public abstract class Pedido implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
-    private Set<ItemPedido> itens = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pedido", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<ItemPedido> itens = new ArrayList<>();
 
     @Column(name = "DATA_PEDIDO")
     private Date data;
@@ -30,10 +30,16 @@ public abstract class Pedido implements Serializable {
     private Status status;
 
     @ManyToOne
+    @JsonIgnoreProperties({"senha", "email", "tipo"})
     private Usuario usuario;
 
     @ManyToOne
+    @JsonIgnoreProperties({"cnpj", "contato", "endereco"})
     private Fornecedor fornecedor;
+
+    @JsonIgnore
+    @Column(name = "DTYPE", insertable = false, updatable = false)
+    private String instancia;
 
     public Pedido() {
     }
@@ -49,8 +55,13 @@ public abstract class Pedido implements Serializable {
     }
 
 
-    public Set<ItemPedido> getItems() {
+    public List<ItemPedido> getItems() {
         return itens;
+    }
+
+
+    public void setItens(List<ItemPedido> itens) {
+        this.itens = itens;
     }
 
 
@@ -59,8 +70,8 @@ public abstract class Pedido implements Serializable {
     }
 
 
-    public void addManyItems(Set<ItemPedido> items) {
-        this.itens.addAll(items);
+    public void addManyItems(List<ItemPedido> items) {
+        if(items != null) this.itens.addAll(items);
     }
 
 
@@ -101,6 +112,16 @@ public abstract class Pedido implements Serializable {
 
     public void setFornecedor(Fornecedor fornecedor) {
         this.fornecedor = fornecedor;
+    }
+
+
+    public String getInstancia() {
+        return this.instancia;
+    }
+
+
+    public void setInstancia(String instancia) {
+        this.instancia = instancia;
     }
 
 

@@ -1,5 +1,7 @@
 package com.system.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.io.Serial;
@@ -19,14 +21,15 @@ public class ItemPedido implements Serializable {
     @ManyToOne
     private Pedido pedido;
 
+    @JsonIgnoreProperties({"fornecedor", "quantidade"})
     @ManyToOne
     private Produto produto;
 
-    @Column(name = "QUANTIDADE_ITEM")
+    @Column(name = "QUANTIDADE")
     private Integer quantidade;
 
 
-    private ItemPedido(){
+    public ItemPedido(){
     }
 
 
@@ -40,6 +43,7 @@ public class ItemPedido implements Serializable {
     }
 
 
+    @JsonIgnore
     public Pedido getPedido() {
         return pedido;
     }
