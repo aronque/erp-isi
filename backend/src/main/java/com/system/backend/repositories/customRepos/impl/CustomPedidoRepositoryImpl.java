@@ -17,7 +17,7 @@ public class CustomPedidoRepositoryImpl implements CustomPedidoRepository {
     @Override
     public List<Pedido> findBy(Pedido pedido) {
         StringBuilder sb = new StringBuilder("FROM Pedido p ");
-        Query query = null;
+        Query query;
 
         if(pedido != null) {
             sb.append(" WHERE ");
@@ -68,7 +68,7 @@ public class CustomPedidoRepositoryImpl implements CustomPedidoRepository {
                     append("'");
 
             if(pedido.getInstancia().equals(PedidoFornecedor.class.getSimpleName()) && pedido.getFornecedor() != null) {
-                sb.append("fornecedor = ").
+                sb.append("fornecedor.id = ").
                         append(pedido.getFornecedor().getId());
             }
         }
@@ -77,7 +77,7 @@ public class CustomPedidoRepositoryImpl implements CustomPedidoRepository {
 
             if(manyClauses) sb.append(" AND ");
 
-            sb.append("usuario = ").
+            sb.append("usuario.id = ").
                     append(pedido.getUsuario().getId());
 
         }

@@ -1,8 +1,6 @@
 package com.system.backend.repositories.customRepos.impl;
 
-import com.system.backend.entities.Fornecedor;
 import com.system.backend.entities.Usuario;
-import com.system.backend.repositories.customRepos.CustomFornecedorRepository;
 import com.system.backend.repositories.customRepos.CustomUsuarioRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -10,6 +8,7 @@ import jakarta.persistence.Query;
 
 import java.util.List;
 
+@SuppressWarnings("ALL")
 public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
 
     @PersistenceContext
@@ -18,7 +17,7 @@ public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
     @Override
     public List<Usuario> findBy(Usuario usuario) {
         StringBuilder sb = new StringBuilder("FROM Usuario u ");
-        Query query = null;
+        Query query;
 
         if(usuario != null) {
             sb.append(" WHERE ");
@@ -64,9 +63,8 @@ public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
 
             if(manyClauses) sb.append(" AND ");
 
-            sb.append("tipo = '").
-                    append(usuario.getTipo().toString()).
-                    append("'");
+            sb.append("tipo = ").
+                    append(usuario.getTipo());
         }
 
         return sb.toString();

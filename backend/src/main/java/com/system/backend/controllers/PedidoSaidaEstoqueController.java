@@ -1,5 +1,6 @@
 package com.system.backend.controllers;
 
+import com.system.backend.entities.ItemPedido;
 import com.system.backend.entities.Pedido;
 import com.system.backend.entities.PedidoSaidaEstoque;
 import com.system.backend.services.CRUDService;
@@ -83,13 +84,24 @@ public class PedidoSaidaEstoqueController {
 
     private void setUpdatedFields(Object[] objAux, PedidoSaidaEstoque pedidoParam, PedidoSaidaEstoque pedidoAux) {
 
-        //TODO
-        //metodo para setar o ID do pedido atual nos itens vindos por parametro
+        if(pedidoParam.getItems() != null && !pedidoParam.getItems().isEmpty()) {
 
-        objAux[1] = pedidoParam.getItems() != null ? pedidoParam.getItems() : pedidoAux.getItems();
+            setPedidoInItems(pedidoParam.getItems(), pedidoParam);
+            objAux[1] = pedidoParam.getItems();
+        } else {
+            setPedidoInItems(pedidoAux.getItems(), pedidoAux);
+            objAux[1] = pedidoAux.getItems();
+        }
+
         objAux[2] = pedidoParam.getData() != null ? pedidoParam.getData() : pedidoAux.getData();
         objAux[3] = pedidoParam.getStatus() != null ? pedidoParam.getStatus() : pedidoAux.getStatus();
         objAux[4] = pedidoAux.getUsuario();
         objAux[6] = pedidoAux.getInstancia();
+    }
+
+    private void setPedidoInItems(List<ItemPedido> items, Pedido pedido) {
+        for(ItemPedido item : items) {
+            item.setPedido(pedido);
+        }
     }
 }

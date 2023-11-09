@@ -16,7 +16,7 @@ public class CustomFornecedorRepositoryImpl implements CustomFornecedorRepositor
     @Override
     public List<Fornecedor> findBy(Fornecedor fornecedor) {
         StringBuilder sb = new StringBuilder("FROM Fornecedor f ");
-        Query query = null;
+        Query query;
 
         if(fornecedor != null) {
             sb.append(" WHERE ");
@@ -72,7 +72,7 @@ public class CustomFornecedorRepositoryImpl implements CustomFornecedorRepositor
 
             if(manyClauses) sb.append(" AND ");
 
-            sb.append("endereco = ").
+            sb.append("endereco.id = ").
                     append(fornecedor.getEndereco().getId());
 
         }
