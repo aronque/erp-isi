@@ -61,6 +61,7 @@ CREATE TABLE PEDIDOS (
     STATUS_PEDIDO VARCHAR(20),
     USUARIO_ID BIGINT,
 	FORNECEDOR_ID BIGINT,
+	DTYPE VARCHAR(20),
     PRIMARY KEY(ID)
 );
 
@@ -114,25 +115,30 @@ END;
 $$ language plpgsql;
 
 
---TODO arrumar esse trigger
+
 CREATE OR REPLACE FUNCTION asseguraTemQuantidadeUpdate() RETURNS trigger AS $$
+DECLARE
+	qnt_versionada int := (SELECT quantidade FROM item_pedido WHERE id = NEW.id);
+	qnt_estoque int := (SELECT qnt_estoque FROM produtos, item_pedido WHERE item_pedido.id = NEW.id AND produtos.id = item_pedido.produto_id);
+	produto_id bigint := (SELECT item_pedido.produto_id FROM item_pedido WHERE item_pedido.id = NEW.id);
 BEGIN
+
 --quantidade adicionada (qnt_nova - qnt_antiga, quando qnt_nova>qnt_antiga) > quantidade em estoque: erro
-	IF (NEW.quantidade > (SELECT quantidade FROM item_pedido WHERE id = NEW.id) AND (
-			(NEW.quantidade - (SELECT quantidade FROM item_pedido WHERE id = NEW.id)) > (SELECT qnt_estoque FROM produtos WHERE id = NEW.produto_id)))
+	IF (NEW.quantidade > qnt_versionada AND (
+			(NEW.quantidade - qnt_versionada) >qnt_estoque))
 		THEN RAISE EXCEPTION 'QUANTIDADE A SER RETIRADA MAIOR DO QUE EXISTENTE EM ESTOQUE!' ;
 	END IF;
 
 --quantidade retirada (qnt_antiga - qnt_nova, quando qnt_nova<qnt_antiga) < quantidade em estoque: adicionar no estoque quantidade retirada do pedido
-	IF (NEW.quantidade < (SELECT quantidade FROM item_pedido WHERE id = NEW.id) AND (
-			((SELECT quantidade FROM item_pedido WHERE id = NEW.id) - NEW.quantidade) < (SELECT qnt_estoque FROM produtos WHERE id = NEW.produto_id)))
-		THEN UPDATE produtos SET qnt_estoque = produtos.qnt_estoque + ((SELECT quantidade FROM item_pedido WHERE id = NEW.id) - NEW.quantidade) WHERE produtos.id = NEW.produto_id;
+	IF (NEW.quantidade < qnt_versionada)
+		THEN UPDATE produtos SET qnt_estoque = produtos.qnt_estoque + (qnt_versionada - NEW.quantidade) WHERE produtos.id = produto_id;
+		RETURN NEW;
 	END IF;
 
 --quantidade adicionada (qnt_nova - qnt_antiga, quando qnt_nova>qnt_antiga) <= quantidade em estoque: retirar do estoque quantidade adicionada no pedido
-	IF (NEW.quantidade > (SELECT quantidade FROM item_pedido WHERE id = NEW.id) AND (
-			(NEW.quantidade - (SELECT quantidade FROM item_pedido WHERE id = NEW.id)) <= (SELECT qnt_estoque FROM produtos WHERE id = NEW.produto_id)))
-		THEN UPDATE produtos SET qnt_estoque = produtos.qnt_estoque - NEW.quantidade WHERE produtos.id = NEW.produto_id;
+	IF (NEW.quantidade > qnt_versionada AND (
+			(NEW.quantidade - qnt_versionada) <= qnt_estoque))
+		THEN UPDATE produtos SET qnt_estoque = produtos.qnt_estoque - NEW.quantidade WHERE produtos.id = produto_id;
 		RETURN NEW;
 	END IF;
 END;
