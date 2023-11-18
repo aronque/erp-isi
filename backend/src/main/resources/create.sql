@@ -162,3 +162,128 @@ BEFORE UPDATE ON item_pedido
 FOR EACH ROW
 	WHEN(verificaTipoPedido(NEW.pedido_id) = 1)
 		EXECUTE FUNCTION asseguraTemQuantidadeUpdate();
+
+------------------------------------------------------------------------------------------------------------
+
+CREATE OR REPLACE VIEW VW_FORNECEDOR_PRODUTO (nome_fornecedor, nome_produto, quantidade_estoque, preco) AS
+SELECT
+    fornecedores.nome as nome_fornecedor,
+    produtos.nome as nome_produto,
+    produtos.qnt_estoque as quantidade_estoque,
+    produtos.preco
+FROM
+    fornecedores,
+    produtos
+WHERE
+    produtos.fornecedor_id = fornecedores.id
+ORDER BY
+    fornecedores.nome;
+
+
+CREATE OR REPLACE VIEW VW_PRODUTO_ESTOQUE (nome_produto, quantidade_estoque) AS
+SELECT
+	produtos.nome as nome_produto,
+	produtos.qnt_estoque as quantidade_estoque
+FROM
+	produtos
+ORDER BY
+	produtos.nome;
+
+
+CREATE OR REPLACE VIEW VW_PEDIDO_PENDENTE (id_pedido, data_pedido, status_pedido) AS
+SELECT
+	pedidos.id as id_pedido,
+	pedidos.data_pedido,
+	pedidos.status_pedido
+FROM
+	pedidos
+WHERE
+	pedidos.status_pedido NOT LIKE 'FINALIZADO'
+ORDER BY
+	pedidos.data_pedido;
+
+
+CREATE OR REPLACE VIEW VW_VENDAS_PRODUTO (nome_produto, nome_fornecedor, quantidade_vendas) AS
+SELECT
+	produtos.nome as nome_produto,
+	fornecedores.nome as nome_fornecedor,
+	items_produto.quantidade as quantidade_vendas
+FROM
+	produtos,
+	fornecedores,
+	(SELECT
+	 	count(*) as quantidade,
+	 	produto_id
+	 FROM
+	 	item_pedido,
+	 	pedidos
+	 WHERE
+	 	pedidos.id = item_pedido.pedido_id
+	 AND
+	 	pedidos.dtype LIKE 'PedidoSaidaEstoque'
+	 GROUP BY
+	 	produto_id) items_produto
+WHERE
+	fornecedores.id = produtos.fornecedor_id
+AND
+	items_produto.produto_id = produtos.id;
+
+
+CREATE OR REPLACE VIEW VW_HIST_ESTOQUE (data_operacao, tipo_operacao, id_produto, id_pedido, quantidade, usuario) AS
+SELECT
+	pedidos.data_pedido data_operacao,
+	(CASE WHEN
+		pedidos.dtype LIKE 'PedidoSaidaEstoque'
+	THEN
+		'RETIRADA'
+	ELSE
+		'ENTRADA'
+	END) as tipo_operacao,
+	item_pedido.produto_id as id_produto,
+	item_pedido.pedido_id as id_pedido,
+	item_pedido.quantidade as quantidade,
+	usuarios.nome
+FROM
+	pedidos,
+	item_pedido,
+	usuarios,
+	produtos
+WHERE
+	item_pedido.pedido_id = pedidos.id
+AND
+	produtos.id = item_pedido.produto_id
+AND
+	usuarios.id = pedidos.usuario_id
+ORDER BY
+	pedidos.data_pedido;
+
+
+--VIEWS PARA GRÁFICOS
+CREATE OR REPLACE VIEW VW_PRODUTOS_PEDIDOS (nome_produto, quantidade_pedidos) AS
+SELECT
+	nome_produto,
+	quantidade_vendas as quantidade_pedidos
+FROM
+	VW_VENDAS_PRODUTO vw;
+
+
+CREATE OR REPLACE VIEW VW_MOVIMENTACOES_MES (mes_data, quantidade_movimentacoes) AS
+SELECT DISTINCT
+	vw.data_operacao mes_data,
+	count(*) quantidade_movimentacoes
+FROM
+	VW_HIST_ESTOQUE vw
+GROUP BY
+	vw.data_operacao
+ORDER BY
+	vw.data_operacao;
+
+
+CREATE OR REPLACE VIEW VW_STATUS_PEDIDOS (status_pedido, quantidade_pedidos) AS
+SELECT
+	pedidos.status_pedido,
+	count(*) as quantidade_pedidos
+FROM
+	pedidos
+GROUP BY
+	pedidos.status_pedido;
