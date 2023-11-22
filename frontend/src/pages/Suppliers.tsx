@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
 import { BasicTable, BasicModal, SupplierForm, InfoModal } from "../components";
 import {
   Text,
@@ -13,6 +14,8 @@ import { AddIcon, Search2Icon } from "@chakra-ui/icons";
 import { ThemeContext } from "../providers/ThemeProvider";
 import { InfoModalProps } from "../components/InfoModal";
 import { useToast } from "@chakra-ui/react";
+
+const suppliers_endpoint = "http://localhost:8080/fornecedores";
 
 const SuppliersPage: React.FC = () => {
   const { currentTheme } = useContext(ThemeContext);
@@ -38,15 +41,23 @@ const SuppliersPage: React.FC = () => {
   >([]);
 
   const getSuppliers: () => Promise<any> = () => {
-    const suppliers_endpoint = "fornecedores.json";
-    return fetch(suppliers_endpoint)
-      .then((data) => data.json())
-      .then((data) => {
-        setData(data.fornecedores);
-        setFilteredData(data.fornecedores);
-        return data.fornecedores;
-      })
-      .catch((error) => console.error("Error fetching data:", error));
+
+    const getSuppliers = suppliers_endpoint;
+    try {
+      return axios.get(getSuppliers).then((response) => {
+        setData(response.data);
+        setFilteredData(response.data);
+      });
+    } catch(err) {
+      toast ({
+        title: "Erro!" + err,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+    
   };
 
   const editSupplier = (supplier) => {
@@ -58,26 +69,56 @@ const SuppliersPage: React.FC = () => {
   };
 
   const deleteSupplier = (supplier) => {
-    console.log("deleteSupplier", supplier);
-    toast({
-      title: "Fornecedor excluído com sucesso!",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      position: "top",
-    });
+
+    const deleteSupplier = suppliers_endpoint + "/delete";
+
+    try{
+      axios.delete(deleteSupplier, {
+        data: {
+          id: supplier.id
+        }
+      });
+
+      toast({
+        title: "Fornecedor excluído com sucesso!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch(err) {
+      toast({
+        title: "Erro! Não foi possível excluir o fornecedor!",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+
   };
 
   const openInfoModal = (values) => {
     console.log("openInfoModal", values);
+
     const data = [];
-    const titles = ["ID", "Nome", "Contato", "CNPJ", "Endereço ID"];
-    const keys = ["id", "nome", "contato", "cnpj", "id_endereco"];
+    const titles = ["ID", "Nome", "Contato", "CNPJ", "Rua", "Número", "Bairro", "Cidade", "UF", "CEP"];
+    const keys = ["id", "nome", "contato", "cnpj", "rua", "numero", "bairro", "cidade", "estado", "cep"];
+    console.log("openInfoModal", values);
+
     titles.forEach((title, idx) => {
-      data.push({
-        title,
-        content: values[keys[idx]],
-      });
+      if(idx < 4) {
+        data.push({
+          title,
+          content: values[keys[idx]],
+        });
+      } else {
+        //tratamento para exibir os dados do endereço
+        data.push({
+          title,
+          content: values["endereco"][keys[idx]],
+        });
+      }
     });
     setCurrentInfoModalData(data);
     setIsOpenModalInfo(true);
@@ -96,21 +137,78 @@ const SuppliersPage: React.FC = () => {
   const onSubmitSupplierForm = (values) => {
     console.log("onSubmitSupplierForm", values);
     if (isEditing) {
-      toast({
-        title: "Fornecedor editado com sucesso!",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-        position: "top",
-      });
+
+      var request = {
+        nome: values.nome,
+        cnpj: values.cnpj,
+        contato: values.contato,
+        endereco: {
+          rua: values.rua,
+          numero: values.numero,
+          bairro: values.bairro,
+          cidade: values.cidade,
+          estado: values.estado,
+          cep: values.cep
+        }
+      }
+      const updateSupplier = suppliers_endpoint + "/update";
+
+      try {
+        axios.put(updateSupplier, request);
+
+        toast({
+          title: "Fornecedor editado com sucesso!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      } catch(err) {
+        toast({
+          title: "Erro! Não foi possível editar o cadastro do fornecedor!",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      }
+
     } else {
-      toast({
-        title: "Fornecedor cadastrado com sucesso!",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-        position: "top",
-      });
+    
+      var request = {
+        nome: values.nome,
+        cnpj: values.cnpj,
+        contato: values.contato,
+        endereco: {
+          rua: values.rua,
+          numero: values.numero,
+          bairro: values.bairro,
+          cidade: values.cidade,
+          estado: values.estado,
+          cep: values.cep
+        }
+      }
+      const insertSupplier = suppliers_endpoint + "/insert";
+      
+      try {
+        axios.post(insertSupplier, request);
+
+        toast({
+          title: "Operação realizada com sucesso",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      } catch(err) {
+        toast({
+          title: "Erro! Operação não realizada.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      }
     }
     const CloseModalSupplierIcon = document.getElementById(
       "CloseModalSupplierIcon"
@@ -201,7 +299,7 @@ const SuppliersPage: React.FC = () => {
               const value = e.target.value;
               const filtered = data.filter((supplier) => {
                 return (
-                  supplier.nome.toLowerCase().includes(value.toLowerCase()) ||
+                  supplier.nome.toLowerCase() ||
                   supplier.contato.toLowerCase().includes(value.toLowerCase())
                 );
               });

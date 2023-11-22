@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import axios from 'axios';
 import { BasicTable, BasicModal, InfoModal, ProductForm } from "../components";
 import {
   Text,
@@ -13,6 +14,8 @@ import { AddIcon, Search2Icon } from "@chakra-ui/icons";
 import { ThemeContext } from "../providers/ThemeProvider";
 import { InfoModalProps } from "../components/InfoModal";
 import { useToast } from "@chakra-ui/react";
+
+const products_endpoint = "http://localhost:8080/produtos";
 
 const ProductsPage: React.FC = () => {
   const { currentTheme } = useContext(ThemeContext);
@@ -44,32 +47,31 @@ const ProductsPage: React.FC = () => {
   const [suppliers, setSuppliers] = useState([]);
 
   async function getProducts(suppliers?: any) {
-    const products_endpoint = "produtos.json";
-    const res = await fetch(products_endpoint);
-    const json: any = await res.json();
+    const res = await axios.get(products_endpoint);
+    const filtered: any = await res.data;
 
     const products_with_suppliers = suppliers
-      ? json.produtos.map((product: any) => {
+      ? filtered.map((product: any) => {
           const supplier = suppliers.find((supplier: any) => {
-            return supplier.id === product.fornecedor_id;
+            return supplier.id === product.fornecedor["id"];
           });
           return {
             ...product,
             fornecedor: supplier?.nome,
           };
         })
-      : json.produtos;
+      : filtered;
     setData(products_with_suppliers);
     setFilteredData(products_with_suppliers);
-    return json.produtos;
+    return filtered;
   }
 
   async function getSuppliers() {
-    const workers_endpoint = "fornecedores.json";
-    const res = await fetch(workers_endpoint);
-    const json = await res.json();
-    setSuppliers(json.fornecedores);
-    return json.fornecedores;
+    const workers_endpoint = "http://localhost:8080/fornecedores";
+    
+    const res = await axios.get(workers_endpoint);
+    setSuppliers(res.data);
+    return res.data;
   }
 
   const editProduct = (product) => {
@@ -82,20 +84,38 @@ const ProductsPage: React.FC = () => {
   };
 
   const deleteProduct = (product) => {
-    toast({
-      title: "Produto excluído com sucesso!",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      position: "top",
-    });
+    const deleteProductEndpoint = products_endpoint + "/delete";
+    
+    try {
+      axios.delete(deleteProductEndpoint, {
+        data: {
+          id: product.id
+        }
+      });
+
+      toast({
+        title: "Produto excluído com sucesso!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch(err) {
+      toast({
+        title: "Erro! Não foi possível excluir o produto!",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    }
   };
 
   const openInfoModal = (values) => {
     console.log("openInfoModal", values);
     const data = [];
-    const titles = ["ID", "Nome", "Fornecedor", "Quantidade"];
-    const keys = ["id", "nome", "fornecedor", "quantidade"];
+    const titles = ["ID", "Nome", "Fornecedor", "Quantidade", "Preço"];
+    const keys = ["id", "nome", "fornecedor", "quantidade", "preco"];
     titles.forEach((title, idx) => {
       data.push({
         title,
@@ -119,21 +139,75 @@ const ProductsPage: React.FC = () => {
   const onSubmitProductForm = (values) => {
     console.log("onSubmitProductForm", values);
     if (isEditing) {
-      toast({
-        title: "Produto editado com sucesso!",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-        position: "top",
-      });
+
+      const updateProductEndpoint = products_endpoint + "/update";
+
+      var updateRequest = {
+        id: values.id,
+        nome: values.nome,
+        fornecedor: {
+          id: values.fornecedor_id
+        },
+        quantidade: values.quantidade,
+        preco: values.preco
+      }
+
+      try {
+
+        axios.put(updateProductEndpoint, updateRequest);
+
+        toast({
+          title: "Produto editado com sucesso!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      } catch(err) {
+        toast({
+          title: "Erro! Não foi possível editar as informações do produto!",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      }
+
+
     } else {
-      toast({
-        title: "Produto cadastrado com sucesso!",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-        position: "top",
-      });
+
+      const insertProductEndpoint = products_endpoint + "/insert";
+
+      var request = {
+        nome: values.nome,
+        fornecedor: {
+          id: values.fornecedor_id
+        },
+        quantidade: values.quantidade,
+        preco: values.preco
+      }
+
+      try {
+
+        axios.post(insertProductEndpoint, request);
+
+        toast({
+          title: "Produto cadastrado com sucesso!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      } catch (err) {
+        toast({
+          title: "Erro! Não foi possível inserir o produto!",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      }
+
     }
     const CloseModalProductIcon = document.getElementById(
       "CloseModalProductIcon"

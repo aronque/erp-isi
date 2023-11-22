@@ -1,5 +1,6 @@
 package com.system.backend.repositories.customRepos.impl;
 
+import com.system.backend.entities.Endereco;
 import com.system.backend.entities.Fornecedor;
 import com.system.backend.repositories.customRepos.CustomFornecedorRepository;
 import jakarta.persistence.EntityManager;
@@ -15,7 +16,7 @@ public class CustomFornecedorRepositoryImpl implements CustomFornecedorRepositor
 
     @Override
     public List<Fornecedor> findBy(Fornecedor fornecedor) {
-        StringBuilder sb = new StringBuilder("FROM Fornecedor f ");
+        StringBuilder sb = new StringBuilder(" FROM Fornecedor f ");
         Query query;
 
         if(fornecedor != null) {
@@ -25,9 +26,15 @@ public class CustomFornecedorRepositoryImpl implements CustomFornecedorRepositor
             query = em.createQuery(sb.toString());
         }
 
-        List<?> result = query.getResultList();
+        List<Fornecedor> result = (List<Fornecedor>) query.getResultList();
 
-        return (List<Fornecedor>) result;
+        for(Fornecedor forn : result) {
+            StringBuilder sbEnd = new StringBuilder(" FROM Enderecos e WHERE id = ");
+            sbEnd.append(forn.getEndereco().getId());
+            forn.setEndereco((Endereco) em.createQuery(sbEnd.toString()).getResultList().get(0));
+        }
+
+        return result;
     }
 
     private String setupQuery(Fornecedor fornecedor, StringBuilder sb) {

@@ -76,7 +76,24 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               </FormControl>
             )}
           </Field>
-
+          <Field name="quantidade" validate={validateName}>
+            {({ field, form }) => (
+              <FormControl isInvalid={form.errors.name && form.touched.name}>
+                <FormLabel>Quantidade</FormLabel>
+                <Input {...field} placeholder="Quantidade atual do produto em estoque" />
+                <FormErrorMessage>{form.errors.name}</FormErrorMessage>
+              </FormControl>
+            )}
+          </Field>
+          <Field name="preco" validate={validateName}>
+            {({ field, form }) => (
+              <FormControl isInvalid={form.errors.name && form.touched.name}>
+                <FormLabel>Preço</FormLabel>
+                <Input {...field} placeholder="Preço do produto" />
+                <FormErrorMessage>{form.errors.name}</FormErrorMessage>
+              </FormControl>
+            )}
+          </Field>
           <Button
             mt={4}
             colorScheme="whatsapp"

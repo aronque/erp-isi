@@ -38,7 +38,8 @@ public class FornecedorController {
 
     @GetMapping("")
     public ResponseEntity<List<Fornecedor>> findAll() {
-        return ResponseEntity.ok((List<Fornecedor>) crudService.filterAll());
+        List<Fornecedor> list = (List<Fornecedor>) crudService.filterAll();
+        return ResponseEntity.ok(list);
     }
 
     @PostMapping("/findByCriteria")
