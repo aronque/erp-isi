@@ -1,7 +1,9 @@
 package com.system.backend.controllers;
 
+import com.system.backend.entities.LoginAux;
 import com.system.backend.entities.Usuario;
 import com.system.backend.services.CRUDService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -68,6 +70,18 @@ public class UsuarioController {
         objAux[4] = usuario.getTipo();
         crudService.delete(objAux);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/entrar")
+    public ResponseEntity login(@RequestBody LoginAux infos, HttpSession session) {
+        System.out.println("RECEBIDO REQUEST");
+        Usuario usuarioLogado = crudService.login(infos.getUser(), infos.getSenha());
+        if(usuarioLogado != null) {
+            session.setAttribute("userSession", usuarioLogado);
+            return ResponseEntity.ok(usuarioLogado);
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
     private void setUpdatedFields(Object[] objAux, Usuario usuarioParam, Usuario usuarioAux) {

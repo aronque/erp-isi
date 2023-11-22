@@ -14,6 +14,8 @@ public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
     @PersistenceContext
     private EntityManager em;
 
+    private boolean login = false;
+
     @Override
     public List<Usuario> findBy(Usuario usuario) {
         StringBuilder sb = new StringBuilder("FROM Usuario u ");
@@ -30,6 +32,24 @@ public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
 
         return (List<Usuario>) result;
     }
+
+
+    @Override
+    public Usuario login(String email, String senha) {
+        login = true;
+        Usuario usuarioAux = new Usuario();
+        StringBuilder sb = new StringBuilder(" FROM Usuario u WHERE ");
+        Query query;
+
+        usuarioAux.setEmail(email);
+        usuarioAux.setSenha(senha);
+
+        query = em.createQuery(setupQuery(usuarioAux, sb));
+        List<?> resultList = query.getResultList();
+
+        return (Usuario) (!resultList.isEmpty() ? resultList.get(0) : null);
+    }
+
 
     private String setupQuery(Usuario usuario, StringBuilder sb) {
         boolean manyClauses = false;
@@ -65,6 +85,14 @@ public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
 
             sb.append("tipo = ").
                     append(usuario.getTipo());
+        }
+
+        if(login) {
+            if(manyClauses) sb.append(" AND ");
+
+            sb.append("senha = '").
+                    append(usuario.getSenha()).
+                    append("'");
         }
 
         return sb.toString();

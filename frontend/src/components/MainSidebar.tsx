@@ -176,7 +176,9 @@ export const MainSidebar: React.FC = () => {
               <MenuLink to="produtos">
                 <MenuItem icon={<ShoppingCartIcon />}>Estoque</MenuItem>
               </MenuLink>
-
+              <MenuLink to="pedidos">
+                <MenuItem icon={<ShoppingCartIcon />}>Pedidos</MenuItem>
+              </MenuLink>
               <SubMenu label="Tema" icon={<InkBottleIcon />}>
                 <MenuItem onClick={() => setTheme("dark")}> Escuro</MenuItem>
                 <MenuItem onClick={() => setTheme("light")}> Claro</MenuItem>

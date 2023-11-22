@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 import {
   Flex,
   Heading,
@@ -13,23 +14,43 @@ import {
   FormControl,
   InputRightElement,
   FormErrorMessage,
+  useToast
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { EmailIcon, LockIcon } from "@chakra-ui/icons";
 
+
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const toast = useToast();
 
   const handleShowClick = () => setShowPassword(!showPassword);
 
-  function onLoginSubmit(values: any, actions: any) {
-    setTimeout(() => {
-      actions.setSubmitting(false);
-      console.log(values);
-      if (values.email === "abc@abc" && values.password === "123") {
-        window.location.href = "/";
-      }
-    }, 1000);
+  async function onLoginSubmit(values: any, actions: any) {
+    
+    const loginEndpoint = "http://localhost:8080/usuarios/entrar"; 
+
+    var request = {
+      user: values.email,
+      senha: values.password
+    }
+
+    try {
+      await axios.post(loginEndpoint, request).then((res) => {
+        if(res.status === 200) {
+          return window.location.href = "/";
+        }
+      });
+      
+    } catch(err) {
+      toast ({
+        title: "Usuário não localizado",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    }
   }
 
   function validateEmail(value: any) {

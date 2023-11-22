@@ -3,6 +3,7 @@ package com.system.backend.services.impl;
 import com.system.backend.entities.Usuario;
 import com.system.backend.repositories.UsuarioRepository;
 import com.system.backend.services.CRUDService;
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -68,4 +69,10 @@ public class UsuarioCRUDServiceImpl implements CRUDService {
     public Object filterAll(Object[] obj) {
         return null;
     }
+
+    @Override
+    public Usuario login(String user, String senha) throws ServiceException {
+        return repository.login(user, senha);
+    }
+
 }
