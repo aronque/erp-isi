@@ -7,5 +7,7 @@ import java.util.List;
 @Service
 public interface RelatorioService {
 
+    public String getRelatorioType();
+
     public List<String> getRelatorioCsv();
 }

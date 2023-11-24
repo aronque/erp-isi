@@ -26,7 +26,7 @@ public class EmailServiceImpl implements EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
             helper.setFrom("isimailsender@gmail.com");
-            helper.setSubject("Relatório");
+            helper.setSubject(relatorio.getNomeRelatorio());
             helper.setTo(relatorio.getEmail());
             helper.setText("Segue em anexo o relatório requisitado.");
 

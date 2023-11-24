@@ -14,6 +14,7 @@ public abstract class Relatorio implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    private String nomeRelatorio;
 
     private Workbook wb = new XSSFWorkbook();
 
@@ -53,6 +54,14 @@ public abstract class Relatorio implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getNomeRelatorio() {
+        return nomeRelatorio;
+    }
+
+    public void setNomeRelatorio(String nomeRelatorio) {
+        this.nomeRelatorio = nomeRelatorio;
     }
 
     public void print(List<String> rows) throws IOException {
@@ -100,4 +109,6 @@ public abstract class Relatorio implements Serializable {
     public abstract String getPathCsv();
 
     public abstract String getXslPath();
+
+    public abstract String getVwName();
 }

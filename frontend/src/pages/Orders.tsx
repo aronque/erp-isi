@@ -102,24 +102,24 @@ const OrdersPage: React.FC = () => {
     console.log("openInfoModal", values);
 
     const data = [];
-    const titles = ["ID", "Nome", "Contato", "CNPJ", "Rua", "Número", "Bairro", "Cidade", "UF", "CEP"];
-    const keys = ["id", "nome", "contato", "cnpj", "rua", "numero", "bairro", "cidade", "estado", "cep"];
+    const titles = ["ID", ""];
+    const keys = ["id", ""];
     console.log("openInfoModal", values);
 
-    titles.forEach((title, idx) => {
-      if(idx < 4) {
-        data.push({
-          title,
-          content: values[keys[idx]],
-        });
-      } else {
-        //tratamento para exibir os dados do endereço
-        data.push({
-          title,
-          content: values["endereco"][keys[idx]],
-        });
-      }
-    });
+    // titles.forEach((title, idx) => {
+    //   if(idx < 4) {
+    //     data.push({
+    //       title,
+    //       content: values[keys[idx]],
+    //     });
+    //   } else {
+    //     //tratamento para exibir os dados do endereço
+    //     data.push({
+    //       title,
+    //       content: values["endereco"][keys[idx]],
+    //     });
+    //   }
+    // });
     setCurrentInfoModalData(data);
     setIsOpenModalInfo(true);
   };
@@ -223,19 +223,15 @@ const OrdersPage: React.FC = () => {
       if (window.innerWidth < 768) {
         setHeaders([
           {
-            header_name: "Nome",
-            header_key: "nome",
+            header_name: "ID",
+            header_key: "id",
           },
         ]);
       } else {
         setHeaders([
           {
-            header_name: "Nome",
-            header_key: "nome",
-          },
-          {
-            header_name: "Contato",
-            header_key: "contato",
+            header_name: "Status",
+            header_key: "status",
           },
         ]);
       }

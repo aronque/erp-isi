@@ -1,6 +1,6 @@
 package com.system.backend.repositories.customRepos.impl;
 
-import com.system.backend.entities.RelatorioProdForn;
+import com.system.backend.entities.Relatorio;
 import com.system.backend.repositories.customRepos.CustomRelatorioRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -17,20 +17,27 @@ import java.util.ResourceBundle;
 @Component
 public class CustomRelatorioRepositoryImpl implements CustomRelatorioRepository {
 
-    private RelatorioProdForn relatorio = new RelatorioProdForn();
+    private Relatorio relatorio;
 
     @PersistenceContext
     private EntityManager em;
 
     @Override
-    public void execProdutoFornecedorRelatorio() {
-        runRelatorio();
+    public void execRelatorio(Class relatorioClass) {
+
+        try {
+            relatorio = (Relatorio) relatorioClass.getDeclaredConstructor().newInstance();
+
+            runRelatorio();
+        } catch(Exception e) {
+
+        }
+
     }
 
-    private long runRelatorio() {
+    private void runRelatorio() {
 
         ResourceBundle bundle = ResourceBundle.getBundle("application-dev");
-        Long rowsInserted = 0L;
 
         try (Connection conn = DriverManager.getConnection(
                 bundle.getString("spring.datasource.url"),
@@ -39,15 +46,13 @@ public class CustomRelatorioRepositoryImpl implements CustomRelatorioRepository 
             File csv = new File(System.getProperty("user.dir") + relatorio.getPathCsv());
             csv.createNewFile();
 
-            rowsInserted = new CopyManager((BaseConnection) conn)
+            new CopyManager((BaseConnection) conn)
                     .copyOut(
-                            "COPY (SELECT * FROM VW_FORNECEDOR_PRODUTO) TO STDOUT (FORMAT csv, DELIMITER ';') ",
+                            "COPY (SELECT * FROM " + relatorio.getVwName() + " ) TO STDOUT (FORMAT csv, DELIMITER ';') ",
                             new FileOutputStream(System.getProperty("user.dir") + relatorio.getPathCsv())
                     );
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
-
-        return rowsInserted;
     }
 }

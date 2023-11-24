@@ -1,6 +1,6 @@
 package com.system.backend.services.impl;
 
-import com.system.backend.entities.RelatorioProdForn;
+import com.system.backend.entities.RelatorioProdEstoque;
 import com.system.backend.repositories.customRepos.CustomRelatorioRepository;
 import com.system.backend.services.RelatorioService;
 import com.system.backend.util.CSVReader;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component("Prod_Forn")
-public class RelatorioProdFornServiceImpl implements RelatorioService {
+@Component("Prod_Estoque")
+public class RelatorioProdEstoqueServiceImpl implements RelatorioService {
 
-    private static final String PATH = "\\src\\main\\resources\\temp\\fornecedor_produtos.csv";
+    private static final String PATH = "\\src\\main\\resources\\temp\\produtos_estoque.csv";
 
     @Autowired
     CustomRelatorioRepository repository;
@@ -20,7 +20,7 @@ public class RelatorioProdFornServiceImpl implements RelatorioService {
     @Override
     public List<String> getRelatorioCsv() {
 
-        repository.execRelatorio(RelatorioProdForn.class);
+        repository.execRelatorio(RelatorioProdEstoque.class);
 
         String path = System.getProperty("user.dir") + PATH;
         List<String> rows = null;
@@ -35,6 +35,6 @@ public class RelatorioProdFornServiceImpl implements RelatorioService {
     }
 
     public String getRelatorioType() {
-        return "Prod_Forn";
+        return "Prod_Estoque";
     }
 }

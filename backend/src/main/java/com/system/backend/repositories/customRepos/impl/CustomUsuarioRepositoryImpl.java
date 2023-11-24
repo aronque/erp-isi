@@ -51,6 +51,12 @@ public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
     }
 
 
+    @Override
+    public Long hasPermission(Long id) {
+        return null;
+    }
+
+
     private String setupQuery(Usuario usuario, StringBuilder sb) {
         boolean manyClauses = false;
 

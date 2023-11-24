@@ -16,6 +16,9 @@ import java.util.List;
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
+    private static final String FUNC_CONST = "CRUDUSUARIO";
+
+
     @Autowired
     @Qualifier("Usuario")
     CRUDService crudService;
@@ -74,7 +77,6 @@ public class UsuarioController {
 
     @PostMapping("/entrar")
     public ResponseEntity login(@RequestBody LoginAux infos, HttpSession session) {
-        System.out.println("RECEBIDO REQUEST");
         Usuario usuarioLogado = crudService.login(infos.getUser(), infos.getSenha());
         if(usuarioLogado != null) {
             session.setAttribute("userSession", usuarioLogado);

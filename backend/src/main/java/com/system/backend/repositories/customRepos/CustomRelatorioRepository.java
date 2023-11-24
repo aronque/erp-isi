@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CustomRelatorioRepository {
 
-    public void execProdutoFornecedorRelatorio();
+    public void execRelatorio(Class<?> relatorioClass);
 }

@@ -14,6 +14,8 @@ import java.util.List;
 @RequestMapping("/produtos")
 public class ProdutoController {
 
+    private static final String FUNC_CONST = "CRUD";
+
     @Autowired
     @Qualifier("Produto")
     CRUDService crudService;

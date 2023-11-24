@@ -108,7 +108,10 @@ export const OrderForm: React.FC<OrderFormProps> = ({
               >
                 <FormLabel>Fornecedor</FormLabel>
                 <Select {...field} placeholder="Selecione o produto">
-                  {useField("fornecedor_id").filter((field) => {
+                  {
+                  useField("fornecedor_id").filter((field) => {
+                    console.log(initial_values.fornecedor_id);
+
                     if(field === null) {
                       products.map((product: any) => {
                         return (
