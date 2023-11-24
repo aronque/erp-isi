@@ -62,4 +62,59 @@ public class RelatorioController {
 
         return ResponseEntity.ok().build();
     }
+
+
+    @PostMapping("/pedidosPendente")
+    public ResponseEntity getRelatorioPedidoPendente(@RequestBody Relatorio relatorioParam) throws IOException {
+        service = GetInjectedRelatorioService.getServiceInstance("Pedido_Pendente");
+        List<String> linhas = service.getRelatorioCsv();
+        Relatorio relatorio = new RelatorioProdEstoque();
+        relatorio.setNomeRelatorio("Relação Pedidos Pendentes");
+        relatorio.setEmail(relatorioParam.getEmail());
+        relatorio.print(linhas);
+
+        emailService.sendEmail(relatorio);
+
+        new File(System.getProperty("user.dir") + relatorio.getXslPath()).delete();
+        new File(System.getProperty("user.dir") + relatorio.getPathCsv()).delete();
+
+        return ResponseEntity.ok().build();
+    }
+
+
+    @PostMapping("/vendasProduto")
+    public ResponseEntity getRelatorioVendasProduto(@RequestBody Relatorio relatorioParam) throws IOException {
+        service = GetInjectedRelatorioService.getServiceInstance("Vendas_Produto");
+        List<String> linhas = service.getRelatorioCsv();
+        Relatorio relatorio = new RelatorioProdEstoque();
+        relatorio.setNomeRelatorio("Relação Vendas-Produto");
+        relatorio.setEmail(relatorioParam.getEmail());
+        relatorio.print(linhas);
+
+        emailService.sendEmail(relatorio);
+
+        new File(System.getProperty("user.dir") + relatorio.getXslPath()).delete();
+        new File(System.getProperty("user.dir") + relatorio.getPathCsv()).delete();
+
+        return ResponseEntity.ok().build();
+    }
+
+
+    @PostMapping("/histEstoque")
+    public ResponseEntity getRelatorioHistEstoque(@RequestBody Relatorio relatorioParam) throws IOException {
+        service = GetInjectedRelatorioService.getServiceInstance("Hist_Estoque");
+        List<String> linhas = service.getRelatorioCsv();
+        Relatorio relatorio = new RelatorioProdEstoque();
+        relatorio.setNomeRelatorio("Relação Histórico Movimentações-Estoque");
+        relatorio.setEmail(relatorioParam.getEmail());
+        relatorio.print(linhas);
+
+        emailService.sendEmail(relatorio);
+
+        new File(System.getProperty("user.dir") + relatorio.getXslPath()).delete();
+        new File(System.getProperty("user.dir") + relatorio.getPathCsv()).delete();
+
+        return ResponseEntity.ok().build();
+    }
+
 }
