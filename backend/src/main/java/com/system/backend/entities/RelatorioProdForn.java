@@ -1,8 +1,10 @@
 package com.system.backend.entities;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.formula.functions.Column;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,41 +12,52 @@ import java.util.List;
 public class RelatorioProdForn extends Relatorio {
 
 
+    private static final String PATH_CSV = "\\src\\main\\resources\\temp\\fornecedor_produtos.csv";
+    private static final String PATH_XLS = "\\src\\main\\resources\\temp\\fornecedor_produtos.xlsx";
+
+
     public RelatorioProdForn() {
         setSht(getWb().createSheet("Produtos_Fornecedor"));
         createHeader();
-    }
-
-    private Workbook parseData(List<?> rows) {
-
-        //itera sobre todas as linhas retornadas
-        int rowIndex = 0;
-        for(Object rawRow : rows) {
-            String aux = (String) rawRow;
-            Row parsedRow = getSht().createRow(rowIndex++);
-
-            //itera sobre as celulas da linha dividas por ;
-            int cellIndex = 0;
-            for(String cell : aux.split(";")) {
-                Cell parsedCell = parsedRow.createCell(cellIndex++);
-                parsedCell.setCellValue(cell);
-            }
-
-            getRows().add(parsedRow);
-        }
-
-        return getWb();
     }
 
 
     /**
      * Cria a linha com os valores de referência
      */
-    private void createHeader() {
+    public void createHeader() {
         List<String> headers = Arrays.asList("FORNECEDOR", "PRODUTO", "QUANTIDADE_ESTOQUE", "PREÇO");
-        for(int i = 0; i <= 4; i++) {
+
+        Font headerStyle = getWb().createFont();
+        headerStyle.setBold(true);
+        headerStyle.setColor(IndexedColors.RED.getIndex());
+
+        CellStyle headerCellStyle = getWb().createCellStyle();
+        headerCellStyle.setFont(headerStyle);
+        headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        headerCellStyle.setShrinkToFit(true);
+        headerCellStyle.setWrapText(false);
+
+        CellStyle headerRowStyle = getWb().createCellStyle();
+        headerRowStyle.setFillBackgroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+
+        addRow(getSht().createRow(0));
+        for(int i = 0; i <= 3; i++) {
             getRows().get(0).createCell(i);
-            getRows().get(0).getCell(0).setCellValue(headers.get(i));
+            getRows().get(0).getCell(i).setCellStyle(headerCellStyle);
+            getRows().get(0).getCell(i).setCellValue(headers.get(i));
+            getRows().get(0).setRowStyle(headerRowStyle);
+            getSht().autoSizeColumn(i);
         }
+    }
+
+    @Override
+    public String getPathCsv(){
+        return PATH_CSV;
+    }
+
+    @Override
+    public String getXslPath(){
+        return PATH_XLS;
     }
 }
