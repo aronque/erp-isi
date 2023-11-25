@@ -8,7 +8,7 @@ import {
   Select
 } from "@chakra-ui/react";
 import { Field, Form, Formik, useFormikContext, useField } from "formik";
-import {UFs} from "./ufs"
+import {UFs} from "./utils/ufs"
 
 interface SupplierFormProps {
   onSubmit: (values?: any) => void;

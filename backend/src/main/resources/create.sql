@@ -86,6 +86,8 @@ INSERT INTO TIPO_USUARIO VALUES(2, 'GERENTE', 'Funcionario nivel gerente do esto
 INSERT INTO TIPO_USUARIO VALUES(3, 'COMUM', ' Funcionario comum da empresa que possui acesso a abertura de pedido');
 INSERT INTO TIPO_USUARIO VALUES(4, 'SUPORTE', 'Operador do suporte ao usuário do sistema');
 
+INSERT INTO USUARIOS VALUES(1, 'ADM', 'adm@gmail.com', 'admisierp', 2);
+
 ------------------------------------------------------------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION verificaTipoPedido(pedido_id bigint) RETURNS integer AS $$
@@ -261,10 +263,29 @@ ORDER BY
 --VIEWS PARA GRÁFICOS
 CREATE OR REPLACE VIEW VW_PRODUTOS_PEDIDOS (nome_produto, quantidade_pedidos) AS
 SELECT
-	nome_produto,
-	quantidade_vendas as quantidade_pedidos
+	produtos.nome as nome_produto,
+	items_produto.quantidade as quantidade_pedidos,
+	data
 FROM
-	VW_VENDAS_PRODUTO vw;
+	produtos,
+	fornecedores,
+	pedidos,
+	(SELECT
+	 	count(*) as quantidade,
+	 	produto_id
+	 FROM
+	 	item_pedido,
+	 	pedidos
+	 WHERE
+	 	pedidos.id = item_pedido.pedido_id
+	 AND
+	 	pedidos.dtype LIKE 'PedidoSaidaEstoque'
+	 GROUP BY
+	 	produto_id) items_produto
+WHERE
+	fornecedores.id = produtos.fornecedor_id
+AND
+	items_produto.produto_id = produtos.id;
 
 
 CREATE OR REPLACE VIEW VW_MOVIMENTACOES_MES (mes_data, quantidade_movimentacoes) AS

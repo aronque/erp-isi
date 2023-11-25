@@ -5,8 +5,10 @@ import {
   FormErrorMessage,
   Input,
   Button,
+  Select
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
+import {Types} from './utils/userTypes'
 
 interface WorkerFormProps {
   onSubmit: (values?: any) => void;
@@ -42,11 +44,11 @@ export const WorkerForm: React.FC<WorkerFormProps> = ({
     >
       {(props) => (
         <Form>
-          <Field name="name" validate={validateName}>
+          <Field name="nome" validate={validateName}>
             {({ field, form }) => (
               <FormControl isInvalid={form.errors.name && form.touched.name}>
                 <FormLabel>Nome</FormLabel>
-                <Input {...field} placeholder="nome do funcionário" />
+                <Input {...field} placeholder="nome do usuário" />
                 <FormErrorMessage>{form.errors.name}</FormErrorMessage>
               </FormControl>
             )}
@@ -55,12 +57,37 @@ export const WorkerForm: React.FC<WorkerFormProps> = ({
             {({ field, form }) => (
               <FormControl isInvalid={form.errors.email && form.touched.email}>
                 <FormLabel>Email</FormLabel>
-                <Input {...field} placeholder="email do funcionário" />
+                <Input {...field} placeholder="email do usuário" />
                 <FormErrorMessage>{form.errors.email}</FormErrorMessage>
               </FormControl>
             )}
           </Field>
-
+          <Field name="senha" validate={validateEmail}>
+            {({ field, form }) => (
+              <FormControl isInvalid={form.errors.email && form.touched.email}>
+                <FormLabel>Senha</FormLabel>
+                <Input {...field} placeholder="Senha do usuário" />
+                <FormErrorMessage>{form.errors.email}</FormErrorMessage>
+              </FormControl>
+            )}
+          </Field>
+          <Field name="tipo" validate={validateName}>
+            {({ field, form }) => (
+              <FormControl>
+                <FormLabel>Tipo</FormLabel>
+                <Select {...field} placeholder="Selecione o tipo do usuário">
+                  {Types.map((type: any) => {
+                    return (
+                      <option key={type.id} value={type.id}>
+                        {type.desc}
+                      </option>
+                    );
+                  })}
+                </Select>
+                <FormErrorMessage>{form.errors.estado}</FormErrorMessage>
+              </FormControl>
+            )}
+          </Field>
           <Button
             mt={4}
             colorScheme="whatsapp"

@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
 import { BasicTable, BasicModal, WorkerForm, InfoModal } from "../components";
 import {
   Text,
@@ -13,6 +14,9 @@ import { AddIcon, Search2Icon } from "@chakra-ui/icons";
 import { ThemeContext } from "../providers/ThemeProvider";
 import { InfoModalProps } from "../components/InfoModal";
 import { useToast } from "@chakra-ui/react";
+import {Types} from "../components/utils/userTypes";
+
+const users_endpoint = "http://localhost:8080/usuarios";
 
 const WorkersPage: React.FC = () => {
   const { currentTheme } = useContext(ThemeContext);
@@ -20,7 +24,7 @@ const WorkersPage: React.FC = () => {
   const [headers, setHeaders] = useState([
     {
       header_name: "Nome",
-      header_key: "name",
+      header_key: "nome",
     },
     {
       header_name: "Email",
@@ -38,15 +42,22 @@ const WorkersPage: React.FC = () => {
   >([]);
 
   const getWorkers: () => Promise<any> = () => {
-    const workers_endpoint = "usuarios.json";
-    return fetch(workers_endpoint)
-      .then((data) => data.json())
-      .then((data) => {
-        setData(data.usuarios);
-        setFilteredData(data.usuarios);
-        return data.usuarios;
-      })
-      .catch((error) => console.error("Error fetching data:", error));
+
+    const getUsers = users_endpoint;
+    try {
+      return axios.get(getUsers).then((response) => {
+        setData(response.data);
+        setFilteredData(response.data);
+      });
+    } catch(err) {
+      toast ({
+        title: "Erro!" + err,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    }
   };
 
   const editWorker = (worker) => {
@@ -71,8 +82,8 @@ const WorkersPage: React.FC = () => {
   const openInfoModal = (values) => {
     console.log("openInfoModal", values);
     const data = [];
-    const titles = ["ID", "Nome", "Email", "Apelido"];
-    const keys = ["id", "name", "email", "username"];
+    const titles = ["ID", "Nome", "Email", "Tipo"];
+    const keys = ["id", "nome", "email", "tipo"];
     titles.forEach((title, idx) => {
       data.push({
         title,
@@ -96,21 +107,65 @@ const WorkersPage: React.FC = () => {
   const onSubmitWorkerForm = (values) => {
     console.log("onSubmitWorkerForm", values);
     if (isEditing) {
-      toast({
-        title: "Usuário editado com sucesso!",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-        position: "top",
-      });
+
+      var request = {
+        id: values.id,
+        nome: values.nome,
+        email: values.email,
+        tipo: values.tipo
+      }
+      const updateUserEndpoint = users_endpoint + "/update";
+
+
+      try {
+        axios.put(updateUserEndpoint, request);
+
+        toast({
+          title: "Usuário atualizado com sucesso!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      } catch(err) {
+        toast({
+          title: "Erro! Operação não realizada.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      }
     } else {
-      toast({
-        title: "Usuário cadastrado com sucesso!",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-        position: "top",
-      });
+
+      var requestInsert = {
+        nome: values.nome,
+        email: values.email,
+        senha: values.senha,
+        tipo: values.tipo
+      }
+      const insertUserEndpoint = users_endpoint + "/insert";
+
+      try {
+        axios.post(insertUserEndpoint, requestInsert);
+
+        toast({
+          title: "Usuário cadastrado com sucesso!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      } catch(err) {
+        toast({
+          title: "Erro! Operação não realizada.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      }
+
     }
     const CloseModalWorkerIcon = document.getElementById(
       "CloseModalWorkerIcon"
@@ -125,14 +180,14 @@ const WorkersPage: React.FC = () => {
         setHeaders([
           {
             header_name: "Nome",
-            header_key: "name",
+            header_key: "nome",
           },
         ]);
       } else {
         setHeaders([
           {
             header_name: "Nome",
-            header_key: "name",
+            header_key: "nome",
           },
           {
             header_name: "Email",
@@ -201,7 +256,7 @@ const WorkersPage: React.FC = () => {
               const value = e.target.value;
               const filtered = data.filter((worker) => {
                 return (
-                  worker.name.toLowerCase().includes(value.toLowerCase()) ||
+                  worker.nome.toLowerCase().includes(value.toLowerCase()) ||
                   worker.email.toLowerCase().includes(value.toLowerCase())
                 );
               });

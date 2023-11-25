@@ -84,8 +84,10 @@ public class Usuario implements Serializable {
 
 
     public enum Tipo {
+
+        FOO(0),
         FUNCIONARIO_ESTOQUE (1),
-        FUNCIONARIO_GERENTE(2),
+        FUNCIONARIO_ADM(2),
         FUNCIONARIO_COMUM(3),
         SUPORTE_SYS(4);
 
