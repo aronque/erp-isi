@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext, useEffect, useState, Component } from "react";
+import axios from "axios";
 import { BasicTable, BasicModal, InfoModal, ProductForm } from "../components";
 import {
   Text,
@@ -14,27 +15,78 @@ import {
 } from "@chakra-ui/react";
 import { VictoryBar, VictoryChart, VictoryLine } from "victory";
 
+
+
+var prodPedBodyData = [];
+var movMesData = [];
+var statusPedData = [];
+
+
 const HomePage: React.FC = () => {
   const [beginDate, setBeginDate] = React.useState<Date | null>(null);
   const [endDate, setEndDate] = React.useState<Date | null>(null);
 
-  const [produtoFornecedor, setProdutoFornecedor] = React.useState<any[]>([
-    { produto: "Óculos", fornecedores: 3 },
-    { produto: "Camiseta", fornecedores: 2 },
-    { produto: "Calça", fornecedores: 5 },
-  ]);
-  const [emissoesPedidos, setEmissoesPedidos] = React.useState<any[]>([
-    { data_emissao: "2021-01-01", quantidade: 2 },
-    { data_emissao: "2021-01-02", quantidade: 3 },
-    { data_emissao: "2021-01-03", quantidade: 5 },
-    { data_emissao: "2021-01-04", quantidade: 4 },
-    { data_emissao: "2021-01-05", quantidade: 7 },
-  ]);
-  const [fornecedorProduto, setFornecedorProduto] = React.useState<any[]>([
-    { fornecedor: "Fornecedor 1", produtos: 3 },
-    { fornecedor: "Fornecedor 2", produtos: 2 },
-    { fornecedor: "Fornecedor 3", produtos: 1 },
-  ]);
+  const graficosEndpoint = "http://localhost:8080/graficos"
+  const graficoProdPedido = graficosEndpoint + "/prodPedido";
+  const graficoMovMes = graficosEndpoint + "/movMes";
+  const graficoStatusPedidos = graficosEndpoint + "/statusPedidos";
+
+  var request  = {
+    filtroInicial: beginDate,
+    filtroFinal: endDate
+  }
+
+  useEffect(() => {
+    getProdPedData();
+    getStatusPedData();
+    getMovMesData();
+
+    setProdutosPedido(prodPedBodyData);
+    setMovMes(movMesData);
+    setStatusPed(statusPedData);
+  }, []);
+
+  const getProdPedData = async () => {
+    await axios.post(graficoProdPedido, request).then(response => {
+      var index = 0;
+      for(const [key, value] of Object.entries(response.data)) {
+
+        prodPedBodyData[index++] = {prod: key, quantidade: value};
+      }
+    })
+  }
+
+  const getMovMesData = async () => {
+    await axios.post(graficoMovMes, request).then(response => {
+      var index = 0;
+      for(const [key, value] of Object.entries(response.data)) {
+
+        prodPedBodyData[index++] = {mes: key, quantidade: value};
+      }
+    })
+  }
+
+  const getStatusPedData = async () => {
+    await axios.post(graficoStatusPedidos, request).then(response => {
+      var index = 0;
+      for(const [key, value] of Object.entries(response.data)) {
+
+        prodPedBodyData[index++] = {status: key, quantidade: value};
+      }
+    })
+  }
+
+  //request gráfico relação quantidade de Pedidos por Produto
+  const [produtosPedido, setProdutosPedido] = React.useState<any[]>([...prodPedBodyData]);
+
+  //request gráfico relação quantidade de Movimentações por Mês
+  const [movMes, setMovMes] = React.useState<any[]>([...movMesData]);
+
+  //request gráfico relação quantidade de Pedidos por Status
+  // var responseStatusPedido = axios.post(graficoStatusPedidos, request).then(response => {
+  //   return response;
+  // });
+  const [statusPed, setStatusPed] = React.useState<any[]>([...statusPedData]);
 
   return (
     <Container maxWidth={1000}>
@@ -85,14 +137,14 @@ const HomePage: React.FC = () => {
         <Card>
           <CardBody>
             <Text fontSize={{ base: "2xl", md: "3xl" }}>
-              Produto - Fornecedor
+              Produto - Pedidos
             </Text>
             <VictoryChart domainPadding={20}>
               <VictoryBar
                 style={{ data: { fill: "#c43a31" } }}
-                data={produtoFornecedor}
-                x="produto"
-                y="fornecedores"
+                data={produtosPedido}
+                x="prod"
+                y="quantidade"
               />
             </VictoryChart>
           </CardBody>
@@ -100,7 +152,7 @@ const HomePage: React.FC = () => {
         <Card>
           <CardBody>
             <Text fontSize={{ base: "2xl", md: "3xl" }}>
-              Emissões de pedidos
+              Movimentações por Mês
             </Text>
             <VictoryChart>
               <VictoryLine
@@ -108,8 +160,8 @@ const HomePage: React.FC = () => {
                   data: { stroke: "#c43a31" },
                   parent: { border: "1px solid #ccc" },
                 }}
-                data={emissoesPedidos}
-                x="data_emissao"
+                data={movMes}
+                x="mes"
                 y="quantidade"
               />
             </VictoryChart>
@@ -123,9 +175,9 @@ const HomePage: React.FC = () => {
             <VictoryChart domainPadding={20}>
               <VictoryBar
                 style={{ data: { fill: "#31aec4" } }}
-                data={fornecedorProduto}
-                x="fornecedor"
-                y="produtos"
+                data={statusPed}
+                x="status"
+                y="quantidade"
               />
             </VictoryChart>
           </CardBody>

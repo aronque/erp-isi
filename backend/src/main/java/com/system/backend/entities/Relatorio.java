@@ -1,6 +1,5 @@
 package com.system.backend.entities;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -8,7 +7,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonDeserialize(as = RelatorioProdForn.class)
 public abstract class Relatorio implements Serializable {
 
     @Serial

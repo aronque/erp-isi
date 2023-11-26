@@ -71,7 +71,8 @@ export const MainSidebar: React.FC = () => {
 
   const location = useLocation();
   const isRestrictedPath =
-    location.pathname.endsWith("/entrar") ||
+    location.pathname.endsWith("/") ||
+    location.pathname.endsWith("/login") ||
     location.pathname.endsWith("/registrar");
 
   useEffect(() => {
@@ -164,7 +165,7 @@ export const MainSidebar: React.FC = () => {
           />
           <div style={{ flex: 1, marginBottom: "32px" }}>
             <Menu menuItemStyles={menuItemStyles}>
-              <MenuLink to="/">
+              <MenuLink to="home">
                 <MenuItem icon={<DiamondIcon />}>Início / Gráficos</MenuItem>
               </MenuLink>
               <MenuLink to="usuarios">
@@ -178,6 +179,9 @@ export const MainSidebar: React.FC = () => {
               </MenuLink>
               <MenuLink to="pedidos">
                 <MenuItem icon={<ShoppingCartIcon />}>Pedidos</MenuItem>
+              </MenuLink>
+              <MenuLink to="relatorios">
+                <MenuItem icon={<ShoppingCartIcon />}>Relatórios</MenuItem>
               </MenuLink>
               <SubMenu label="Tema" icon={<InkBottleIcon />}>
                 <MenuItem onClick={() => setTheme("dark")}> Escuro</MenuItem>

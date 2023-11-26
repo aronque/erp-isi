@@ -1,8 +1,6 @@
 package com.system.backend.controllers;
 
-import com.system.backend.entities.Relatorio;
-import com.system.backend.entities.RelatorioProdEstoque;
-import com.system.backend.entities.RelatorioProdForn;
+import com.system.backend.entities.*;
 import com.system.backend.services.EmailService;
 import com.system.backend.services.GetInjectedRelatorioService;
 import com.system.backend.services.RelatorioService;
@@ -29,7 +27,7 @@ public class RelatorioController {
 
 
     @PostMapping("/produtoFornecedor")
-    public ResponseEntity getRelatorioProdForn(@RequestBody Relatorio relatorioParam) throws IOException {
+    public ResponseEntity getRelatorioProdForn(@RequestBody RelatorioProdForn relatorioParam) throws IOException {
         service = GetInjectedRelatorioService.getServiceInstance("Prod_Forn");
         List<String> linhas = service.getRelatorioCsv();
         Relatorio relatorio = new RelatorioProdForn();
@@ -47,7 +45,7 @@ public class RelatorioController {
 
 
     @PostMapping("/produtoEstoque")
-    public ResponseEntity getRelatorioProdEstoque(@RequestBody Relatorio relatorioParam) throws IOException {
+    public ResponseEntity getRelatorioProdEstoque(@RequestBody RelatorioProdEstoque relatorioParam) throws IOException {
         service = GetInjectedRelatorioService.getServiceInstance("Prod_Estoque");
         List<String> linhas = service.getRelatorioCsv();
         Relatorio relatorio = new RelatorioProdEstoque();
@@ -65,10 +63,10 @@ public class RelatorioController {
 
 
     @PostMapping("/pedidosPendente")
-    public ResponseEntity getRelatorioPedidoPendente(@RequestBody Relatorio relatorioParam) throws IOException {
+    public ResponseEntity getRelatorioPedidoPendente(@RequestBody RelatorioPedidoPendente relatorioParam) throws IOException {
         service = GetInjectedRelatorioService.getServiceInstance("Pedido_Pendente");
         List<String> linhas = service.getRelatorioCsv();
-        Relatorio relatorio = new RelatorioProdEstoque();
+        Relatorio relatorio = new RelatorioPedidoPendente();
         relatorio.setNomeRelatorio("Relação Pedidos Pendentes");
         relatorio.setEmail(relatorioParam.getEmail());
         relatorio.print(linhas);
@@ -83,10 +81,10 @@ public class RelatorioController {
 
 
     @PostMapping("/vendasProduto")
-    public ResponseEntity getRelatorioVendasProduto(@RequestBody Relatorio relatorioParam) throws IOException {
+    public ResponseEntity getRelatorioVendasProduto(@RequestBody RelatorioVendasProduto relatorioParam) throws IOException {
         service = GetInjectedRelatorioService.getServiceInstance("Vendas_Produto");
         List<String> linhas = service.getRelatorioCsv();
-        Relatorio relatorio = new RelatorioProdEstoque();
+        Relatorio relatorio = new RelatorioVendasProduto();
         relatorio.setNomeRelatorio("Relação Vendas-Produto");
         relatorio.setEmail(relatorioParam.getEmail());
         relatorio.print(linhas);
@@ -101,10 +99,10 @@ public class RelatorioController {
 
 
     @PostMapping("/histEstoque")
-    public ResponseEntity getRelatorioHistEstoque(@RequestBody Relatorio relatorioParam) throws IOException {
+    public ResponseEntity getRelatorioHistEstoque(@RequestBody RelatorioHistEstoque relatorioParam) throws IOException {
         service = GetInjectedRelatorioService.getServiceInstance("Hist_Estoque");
         List<String> linhas = service.getRelatorioCsv();
-        Relatorio relatorio = new RelatorioProdEstoque();
+        Relatorio relatorio = new RelatorioHistEstoque();
         relatorio.setNomeRelatorio("Relação Histórico Movimentações-Estoque");
         relatorio.setEmail(relatorioParam.getEmail());
         relatorio.print(linhas);

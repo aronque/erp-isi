@@ -264,7 +264,7 @@ const SuppliersPage: React.FC = () => {
           data={currentInfoModalData}
         />
         <BasicModal
-          button_text="Cadastrar Forncedor"
+          button_text="Cadastrar Fornecedor"
           button_icon={<AddIcon mr={3} />}
           button_color_scheme={currentTheme === "light" ? "blue" : "facebook"}
           modal_title={modalTitle}

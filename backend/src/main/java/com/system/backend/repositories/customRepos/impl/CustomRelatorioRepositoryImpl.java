@@ -2,8 +2,6 @@ package com.system.backend.repositories.customRepos.impl;
 
 import com.system.backend.entities.Relatorio;
 import com.system.backend.repositories.customRepos.CustomRelatorioRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.postgresql.copy.CopyManager;
 import org.postgresql.core.BaseConnection;
 import org.springframework.stereotype.Component;
@@ -18,9 +16,6 @@ import java.util.ResourceBundle;
 public class CustomRelatorioRepositoryImpl implements CustomRelatorioRepository {
 
     private Relatorio relatorio;
-
-    @PersistenceContext
-    private EntityManager em;
 
     @Override
     public void execRelatorio(Class relatorioClass) {

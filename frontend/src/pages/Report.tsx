@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import {
   Flex,
@@ -14,37 +14,49 @@ import {
   FormControl,
   InputRightElement,
   FormErrorMessage,
-  useToast
+  useToast,
+  FormLabel,
+  Select,
+  Container
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
+import { ThemeContext } from "../providers/ThemeProvider";
 import { EmailIcon, LockIcon } from "@chakra-ui/icons";
+import { Reports } from "../components/utils/reports";
 
 
-const LoginPage = () => {
-  const [showPassword, setShowPassword] = useState(false);
+const ReportPage = () => {
+  const { currentTheme } = useContext(ThemeContext);
+
   const toast = useToast();
 
-  const handleShowClick = () => setShowPassword(!showPassword);
-
-  async function onLoginSubmit(values: any, actions: any) {
+  async function onBuildSubmit(values: any, actions: any) {
     
-    const loginEndpoint = "http://localhost:8080/usuarios/entrar"; 
+    const reportsEndpoint = "http://localhost:8080/relatorios"; 
+
+    const aux = Reports.find((report) => report.id == values.relatorio)
+    var requestEndpoint = reportsEndpoint + aux.endPoint;
 
     var request = {
-      user: values.email,
-      senha: values.password
+      email: values.email
     }
 
     try {
-      await axios.post(loginEndpoint, request).then((res) => {
+      await axios.post(requestEndpoint, request).then((res) => {
         if(res.status === 200) {
-          return window.location.href = "/home";
+          toast ({
+            title: "Sucesso! O relatório será enviado para o email inserido.",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
         }
       });
       
     } catch(err) {
       toast ({
-        title: "Usuário não localizado",
+        title: "Erro ao gerar relatório",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -59,14 +71,15 @@ const LoginPage = () => {
     }
   }
 
-  function validatePassword(value: any) {
+  function validateRelatorio(value: any) {
     if (!value) {
-      return "Digite a senha.";
+      return "Relatorio é obrigatório..";
     }
   }
 
   return (
-    <Flex
+    <Container maxWidth={1000}>
+      <Flex
       flexDirection="column"
       width="100wh"
       height="100vh"
@@ -80,12 +93,10 @@ const LoginPage = () => {
         justifyContent="center"
         alignItems="center"
       >
-        <Avatar bg="#0098e5" />
-        <Heading color="#0098e5">Bem-vindo</Heading>
         <Box minW={{ base: "90%", md: "468px" }}>
           <Formik
-            onSubmit={onLoginSubmit}
-            initialValues={{ email: "", password: "" }}
+            onSubmit={onBuildSubmit}
+            initialValues={{ email: ""}}
           >
             {(props) => (
               <Form>
@@ -105,42 +116,31 @@ const LoginPage = () => {
                             pointerEvents="none"
                             children={<EmailIcon />}
                           />
-                          <Input {...field} type="email" placeholder="E-mail" />
+                          <Input colorScheme={currentTheme === "light" ? "blackAlpha" : "facebook"} {...field} type="email" placeholder="E-mail que receberá o relatório" />
                         </InputGroup>
                         <FormErrorMessage>{form.errors.email}</FormErrorMessage>
                       </FormControl>
                     )}
                   </Field>
-                  <Field name="password" validate={validatePassword}>
-                    {({ field, form }) => (
+                  <Field name="relatorio" validate={validateRelatorio}>
+                      {({ field, form }) => (
                       <FormControl
                         isInvalid={
-                          form.errors.password && form.touched.password
+                          form.errors.fornecedor_id && form.touched.fornecedor_id
                         }
                       >
-                        <InputGroup>
-                          <InputLeftElement
-                            pointerEvents="none"
-                            children={<LockIcon />}
-                          />
-                          <Input
-                            {...field}
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Senha"
-                          />
-                          <InputRightElement width="4.5rem">
-                            <Button
-                              h="1.75rem"
-                              size="sm"
-                              onClick={handleShowClick}
-                            >
-                              {showPassword ? "Esconder" : "Mostrar"}
-                            </Button>
-                          </InputRightElement>
-                        </InputGroup>
-                        <FormErrorMessage>
-                          {form.errors.password}
-                        </FormErrorMessage>
+                        <FormLabel>Relatórios</FormLabel>
+                        <Select {...field} placeholder="Selecione o relatório">
+                          {Reports.map((report: any) => {
+                            return (
+                              <option key={report.id} value={report.id}>
+                                {report.desc}
+                              </option>
+                            );
+                          })}
+                        </Select>
+
+                        <FormErrorMessage>{form.errors.fornecedor_id}</FormErrorMessage>
                       </FormControl>
                     )}
                   </Field>
@@ -148,11 +148,11 @@ const LoginPage = () => {
                     borderRadius={0}
                     type="submit"
                     variant="solid"
-                    colorScheme="blue"
+                    colorScheme={currentTheme === "light" ? "blue" : "facebook"}
                     width="full"
                     isLoading={props.isSubmitting}
                   >
-                    ENTRAR
+                    GERAR
                   </Button>
                 </Stack>
               </Form>
@@ -161,7 +161,8 @@ const LoginPage = () => {
         </Box>
       </Stack>
     </Flex>
+    </Container>
   );
 };
 
-export default LoginPage;
+export default ReportPage;
