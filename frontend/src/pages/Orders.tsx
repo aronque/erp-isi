@@ -29,6 +29,10 @@ const OrdersPage: React.FC = () => {
       header_name: "Status",
       header_key: "status",
     },
+    {
+      header_name: "Tipo Pedido",
+      header_key: "tipo",
+    }
   ]);
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -40,14 +44,46 @@ const OrdersPage: React.FC = () => {
     InfoModalProps["data"]
   >([]);
 
-  const getOrders: () => Promise<any> = () => {
+  async function getOrders() {
 
-    const getOrders = orders_endpoint;
+    const getSupplierOrders = orders_endpoint + "Fornecedor";
+    const getProductsOrders = orders_endpoint + "Estoque";
+
+
     try {
-      return axios.get(getOrders).then((response) => {
-        setData(response.data);
-        setFilteredData(response.data);
+      // await axios.get(getSupplierOrders).then((response) => {
+      //   setData(response.data);
+      //   setFilteredData(response.data);
+      // });
+
+      var resEstoque = await axios.get(getProductsOrders);
+      var filteredEstoque: any = await resEstoque.data;
+
+      var resFornecedor = await axios.get(getSupplierOrders);
+      var filteredFornecedor: any = await resFornecedor.data;
+      
+      var filtered = [];
+
+      var filteredFinalEstoque = filteredEstoque.map(obj => {
+        return {
+          ...obj,
+          tipo: 'RETIRADA'
+        };
       });
+      filtered.push(...filteredFinalEstoque)
+
+      var filteredFinalFornecedor = filteredFornecedor.map(obj => {
+        return {
+          ...obj,
+          tipo: 'ENTRADA'
+        };
+      });
+      filtered.push(...filteredFinalFornecedor)
+
+      setData(filtered);
+      setFilteredData(filtered);
+
+      return filteredData;
     } catch(err) {
       toast ({
         title: "Erro!" + err,
@@ -102,24 +138,37 @@ const OrdersPage: React.FC = () => {
     console.log("openInfoModal", values);
 
     const data = [];
-    const titles = ["ID", ""];
-    const keys = ["id", ""];
+    const titles = ["ID", "Status", "Tipo", "Data", "Usuário", "Fornecedor"];
+    const keys = ["id", "status", "tipo", "data", "nome", "nome"];
     console.log("openInfoModal", values);
 
-    // titles.forEach((title, idx) => {
-    //   if(idx < 4) {
-    //     data.push({
-    //       title,
-    //       content: values[keys[idx]],
-    //     });
-    //   } else {
-    //     //tratamento para exibir os dados do endereço
-    //     data.push({
-    //       title,
-    //       content: values["endereco"][keys[idx]],
-    //     });
-    //   }
-    // });
+    titles.forEach((title, index) => {
+      if(index < 4) {
+        data.push({
+          title,
+          content: values[keys[index]]
+        })
+      } else {
+        if(index < 5) { 
+          if(values["usuario"] === null) {
+            return;
+          }
+          data.push({
+            title,
+            content: values["usuario"][keys[index]]
+          })
+        } else {
+          if(values["fornecedor"] === null) {
+            return;
+          }
+          data.push({
+            title,
+            content: values["fornecedor"][keys[index]]
+          })
+        }
+      }
+    });
+
     setCurrentInfoModalData(data);
     setIsOpenModalInfo(true);
   };
@@ -130,12 +179,12 @@ const OrdersPage: React.FC = () => {
 
   const onCloseModalWorker = () => {
     setIsEditing(false);
-    setModalTitle("Cadastrar Fornecedor");
+    setModalTitle("Cadastrar Pedido");
     setSelectedInitialValues({});
   };
 
-  const onSubmitSupplierForm = (values) => {
-    console.log("onSubmitSupplierForm", values);
+  const onSubmitOrderForm = (values) => {
+    console.log("onSubmitOrderForm", values);
     if (isEditing) {
 
       var request = {
@@ -151,10 +200,10 @@ const OrdersPage: React.FC = () => {
           cep: values.cep
         }
       }
-      const updateSupplier = orders_endpoint + "/update";
+      const updateOrder = orders_endpoint + "/update";
 
       try {
-        axios.put(updateSupplier, request);
+        axios.put(updateOrder, request);
 
         toast({
           title: "Fornecedor editado com sucesso!",
@@ -188,10 +237,10 @@ const OrdersPage: React.FC = () => {
           cep: values.cep
         }
       }
-      const insertSupplier = orders_endpoint + "/insert";
+      const insertOrder = orders_endpoint + "/insert";
       
       try {
-        axios.post(insertSupplier, request);
+        axios.post(insertOrder, request);
 
         toast({
           title: "Operação realizada com sucesso",
@@ -230,9 +279,17 @@ const OrdersPage: React.FC = () => {
       } else {
         setHeaders([
           {
+            header_name: "ID",
+            header_key: "id",            
+          },
+          {
             header_name: "Status",
             header_key: "status",
           },
+          {
+            header_name: "Tipo Pedido",
+            header_key: "tipo"
+          }
         ]);
       }
     }, 100);
@@ -252,15 +309,15 @@ const OrdersPage: React.FC = () => {
         flexWrap="wrap"
         gap={3}
       >
-        <Text fontSize={{ base: "2xl", md: "3xl" }}>Fornecedores</Text>
+        <Text fontSize={{ base: "2xl", md: "3xl" }}>Pedidos</Text>
         <InfoModal
           is_open={isOpenModalInfo}
           closeInfoModal={closeInfoModal}
-          modal_title="Detalhes do Fornecedor"
+          modal_title="Detalhes do Pedido"
           data={currentInfoModalData}
         />
         <BasicModal
-          button_text="Cadastrar Forncedor"
+          button_text="Cadastrar Pedido"
           button_icon={<AddIcon mr={3} />}
           button_color_scheme={currentTheme === "light" ? "blue" : "facebook"}
           modal_title={modalTitle}
@@ -268,7 +325,7 @@ const OrdersPage: React.FC = () => {
           onCloseModalWorker={onCloseModalWorker}
         >
           <SupplierForm
-            onSubmit={onSubmitSupplierForm}
+            onSubmit={onSubmitOrderForm}
             is_editing={isEditing}
             initial_values={selectedInitialValues}
           />
@@ -293,12 +350,24 @@ const OrdersPage: React.FC = () => {
             placeholder="Pesquisar..."
             onChange={(e) => {
               const value = e.target.value;
-              const filtered = data.filter((supplier) => {
+              const filtered = [];
+              filtered.push( data.filter((pedido) => {
                 return (
-                  supplier.nome.toLowerCase() ||
-                  supplier.contato.toLowerCase().includes(value.toLowerCase())
+                  pedido.id ||
+                  pedido.status.toLowerCase().includes(value.toLowerCase())
                 );
-              });
+              }));
+              console.log(filtered)
+              filtered.map(obj => {
+                if(obj.fornecedor === null) {
+                  obj.tipo = 'RETIRADA';
+                } else {
+                  obj.tipo = 'ENTRADA';
+                }
+
+                return obj;
+              })
+
               setFilteredData(filtered);
             }}
             colorScheme={currentTheme === "light" ? "blackAlpha" : "facebook"}
