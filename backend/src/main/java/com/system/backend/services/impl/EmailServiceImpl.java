@@ -1,9 +1,11 @@
 package com.system.backend.services.impl;
 
+import com.system.backend.entities.MailInfos;
 import com.system.backend.entities.Relatorio;
 import com.system.backend.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -34,9 +36,20 @@ public class EmailServiceImpl implements EmailService {
             helper.addAttachment(Objects.requireNonNull(arquivo.getFilename()), arquivo);
 
             sender.send(message);
-        } catch(MessagingException e) {
+        } catch(MessagingException ignored) {
 
         }
 
     }
+
+    public void sendEmail(MailInfos email) {
+        SimpleMailMessage mail = new SimpleMailMessage();
+        mail.setFrom("isimailsender@gmail.com");
+        mail.setTo(email.getEmailTo());
+        mail.setText(email.getMessage());
+        mail.setSubject(email.getSubject());
+
+        sender.send(mail);
+    }
+
 }

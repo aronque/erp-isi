@@ -1,8 +1,10 @@
 package com.system.backend.controllers;
 
 import com.system.backend.entities.LoginAux;
+import com.system.backend.entities.MailInfos;
 import com.system.backend.entities.Usuario;
 import com.system.backend.services.CRUDService;
+import com.system.backend.services.EmailService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,6 +25,9 @@ public class UsuarioController {
     @Qualifier("Usuario")
     CRUDService crudService;
 
+    @Autowired
+    EmailService emailService;
+
     @PostMapping("/insert")
     public ResponseEntity createUsuario(@RequestBody Usuario usuario) {
         Object[] objAux = new Object[5];
@@ -30,7 +35,14 @@ public class UsuarioController {
         objAux[2] = usuario.getEmail();
         objAux[3] = usuario.getSenha();
         objAux[4] = usuario.getTipo();
-        crudService.create(objAux);
+        Usuario criado = (Usuario) crudService.create(objAux);
+
+        MailInfos infos = new MailInfos();
+        infos.setEmailTo(criado.getEmail());
+        infos.setMessage("Um usuário foi criado com sucesso para este email! Segue os dados para utilização no sistema: \nUser: " + criado.getEmail() + "\nSenha:" + criado.getSenha() + "\n\nCaso não tenha sido você que criou este usuário, entre em contato respondendo este email.");
+        infos.setSubject("Confirmação - Criação de Usuário");
+        emailService.sendEmail(infos);
+
         return ResponseEntity.ok().build();
     }
 
