@@ -26,8 +26,6 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const toast = useToast();
 
-  const { login } = useAuth();
-
   const handleShowClick = () => setShowPassword(!showPassword);
 
   async function onLoginSubmit(values: any, actions: any) {
@@ -43,9 +41,6 @@ const LoginPage = () => {
     try {
       await axios.post(loginEndpoint, request).then((res) => {
         if(res.status === 200) {
-          login({
-            id: res.data['id']
-          })
           return window.location.href = "/whitePage";
         }
       });

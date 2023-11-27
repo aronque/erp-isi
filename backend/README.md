@@ -51,4 +51,4 @@ Para poder subir o backend também é necessário possuir o servidor do banco de
 
 #### Senha: erpisi
 
-Após finalizar a criação do servidor de BD, expandir o menu de Servers e em cima do item Schemas, clicar com botão direito e selecionar a opçao "Query Tool". Ao abrir a tela das querys, copiar todo [create.sql](../backend/src/main/resources/create.sql), selecionar o texto todo na tela de queries (CTRL + A) e selecionar o botão de rodar (ou F5 com o texto selecionado). Se não houver nenhum erro, o banco está criado e já é possível rodar o comando para subir o backend.
+Após finalizar a criação do servidor de BD, expandir o menu de Servers e em cima do item Schemas, clicar com botão direito e selecionar a opçao "Query Tool". Ao abrir a tela das querys, copiar todo [create.sql](create.sql), selecionar o texto todo na tela de queries (CTRL + A) e selecionar o botão de rodar (ou F5 com o texto selecionado). Se não houver nenhum erro, o banco está criado e já é possível rodar o comando para subir o backend.
