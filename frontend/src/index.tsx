@@ -6,17 +6,22 @@ import reportWebVitals from "./reportWebVitals";
 
 import { ThemeProvider } from "./providers/ThemeProvider";
 import { ChakraProvider } from "@chakra-ui/react";
+import { AuthProvider } from './components/SessionManager';
+
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
+          <AuthProvider>
     <ChakraProvider>
       <ThemeProvider>
-        <App />
+      <App />
       </ThemeProvider>
     </ChakraProvider>
+    </AuthProvider>
+
   </React.StrictMode>
 );
 

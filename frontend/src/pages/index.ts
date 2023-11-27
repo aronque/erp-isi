@@ -6,4 +6,4 @@ export { default as Login } from "./Login";
 export { default as Register } from "./Register";
 export { default as Report } from "./Report";
 export { default as Orders } from "./Orders";
-
+export { default as WhitePage } from "./WhitePage";

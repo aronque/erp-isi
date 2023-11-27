@@ -103,7 +103,13 @@ public class PedidoCRUDServiceImpl implements CRUDService {
 
     @Override
     public void delete(Object[] obj) {
-        Pedido aux = new PedidoSaidaEstoque();
+        Pedido aux = null;
+        if(obj[6].equals(PedidoFornecedor.class)) {
+            aux = new PedidoFornecedor();
+        } else {
+            aux = new PedidoSaidaEstoque();
+        }
+
         aux.setId(obj[0] != null ? (Long) obj[0] : null);
         aux.addManyItems(obj[1] != null ? (List<ItemPedido>) obj[1] : null);
         aux.setData(obj[2] != null ? (Date) obj[2] : null);

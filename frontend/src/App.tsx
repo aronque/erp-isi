@@ -3,7 +3,7 @@ import { MainSidebar } from "./components/MainSidebar";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import { Suppliers, Home, Products, Workers, Login, Register, Report, Orders } from "./pages";
+import { Suppliers, Home, Products, Workers, Login, Register, Report, Orders, WhitePage } from "./pages";
 import { ThemeContext } from "./providers/ThemeProvider";
 import { useContext } from "react";
 import { Theme } from "./types";
@@ -35,6 +35,7 @@ function App() {
           <Route path="/registrar" element={<Register />} />
           <Route path="/relatorios" element={<Report />} />
           <Route path="/pedidos" element={<Orders />} />
+          <Route path="/whitePage" element={<WhitePage />} />
         </Routes>
       </BrowserRouter>
     </MainContainer>

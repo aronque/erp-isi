@@ -14,10 +14,18 @@ import { AddIcon, Search2Icon } from "@chakra-ui/icons";
 import { ThemeContext } from "../providers/ThemeProvider";
 import { InfoModalProps } from "../components/InfoModal";
 import { useToast } from "@chakra-ui/react";
+import { OrderForm } from "../components/OrderForm";
+import { useAuth } from '../components/SessionManager';
 
 const orders_endpoint = "http://localhost:8080/pedidos";
+const suppliersOrders = "Fornecedor";
+const productsOrders = "Estoque";
+
 
 const OrdersPage: React.FC = () => {
+
+  const { user } = useAuth();
+
   const { currentTheme } = useContext(ThemeContext);
   const toast = useToast();
   const [headers, setHeaders] = useState([
@@ -44,17 +52,49 @@ const OrdersPage: React.FC = () => {
     InfoModalProps["data"]
   >([]);
 
+  const [products, setProducts] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
+
+
+  const [productsFetched, setProductsFetched] = useState(false);
+  const [suppliersFetched, setSuppliersFetched] = useState(false);
+
+  const getProducts: () => Promise<any> = () => {
+    const productsEndpoint = "http://localhost:8080/produtos";
+
+    // Verifica se os dados já foram buscados
+    if (productsFetched) {
+      return Promise.resolve();
+    }
+
+    return axios.get(productsEndpoint).then((response) => {
+      setProducts(response.data);
+      setProductsFetched(true); // Atualiza a flag indicando que os dados foram buscados
+    });
+    
+  };
+
+  const getSuppliers: () => Promise<any> = () => {
+    const suppliersEndpoint = "http://localhost:8080/fornecedores";
+
+    // Verifica se os dados já foram buscados
+    if (suppliersFetched) {
+      return Promise.resolve();
+    }
+
+    return axios.get(suppliersEndpoint).then((response) => {
+      setSuppliers(response.data);
+      setSuppliersFetched(true); // Atualiza a flag indicando que os dados foram buscados
+    });
+  };
+
   async function getOrders() {
 
-    const getSupplierOrders = orders_endpoint + "Fornecedor";
-    const getProductsOrders = orders_endpoint + "Estoque";
+    const getSupplierOrders = orders_endpoint + suppliersOrders;
+    const getProductsOrders = orders_endpoint + productsOrders;
 
 
     try {
-      // await axios.get(getSupplierOrders).then((response) => {
-      //   setData(response.data);
-      //   setFilteredData(response.data);
-      // });
 
       var resEstoque = await axios.get(getProductsOrders);
       var filteredEstoque: any = await resEstoque.data;
@@ -96,27 +136,32 @@ const OrdersPage: React.FC = () => {
     
   };
 
-  const editSupplier = (supplier) => {
+  const editSupplier = (order) => {
     setIsEditing(true);
-    setSelectedInitialValues(supplier);
-    setModalTitle("Editar Fornecedor - ID: " + supplier.id);
+    setSelectedInitialValues(order);
+    setModalTitle("Editar Fornecedor - ID: " + order.id);
     const ModalWorkerButton = document.getElementById("ModalCRUD");
     ModalWorkerButton?.click();
   };
 
-  const deleteSupplier = (supplier) => {
+  const deleteOrder = (order) => {
 
-    const deleteSupplier = orders_endpoint + "/delete";
+    var deleteOrder;
+    if(order.tipo == "ENTRADA") {
+      deleteOrder = orders_endpoint + suppliersOrders + "/delete"
+    } else {
+      deleteOrder = orders_endpoint + productsOrders + "/delete"
+    }
 
     try{
-      axios.delete(deleteSupplier, {
+      axios.delete(deleteOrder, {
         data: {
-          id: supplier.id
+          id: order.id
         }
       });
 
       toast({
-        title: "Fornecedor excluído com sucesso!",
+        title: "Pedido excluído com sucesso!",
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -124,7 +169,7 @@ const OrdersPage: React.FC = () => {
       });
     } catch(err) {
       toast({
-        title: "Erro! Não foi possível excluir o fornecedor!",
+        title: "Erro! Não foi possível excluir o pedido!",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -135,6 +180,7 @@ const OrdersPage: React.FC = () => {
   };
 
   const openInfoModal = (values) => {
+    console.log(user)
     console.log("openInfoModal", values);
 
     const data = [];
@@ -184,6 +230,7 @@ const OrdersPage: React.FC = () => {
   };
 
   const onSubmitOrderForm = (values) => {
+    console.log(isEditing)
     console.log("onSubmitOrderForm", values);
     if (isEditing) {
 
@@ -223,41 +270,92 @@ const OrdersPage: React.FC = () => {
       }
 
     } else {
-    
-      var request = {
-        nome: values.nome,
-        cnpj: values.cnpj,
-        contato: values.contato,
-        endereco: {
-          rua: values.rua,
-          numero: values.numero,
-          bairro: values.bairro,
-          cidade: values.cidade,
-          estado: values.estado,
-          cep: values.cep
+
+      const insertOrder = "/insert";
+      const supplierOrders = "Fornecedor";
+      const productsOrders = "Estoque";
+
+      if(values.fornecedor_id != null) {
+
+        const parsedEndpoint = orders_endpoint + supplierOrders + insertOrder;
+
+        var aux = [];
+        values.produtos.map(produto => {
+          aux.push({
+            produto: {
+              id: produto.id
+            },
+            quantidade: produto.quantidade
+          })
+        })
+
+        var requestFornecedor = {
+          itens: aux,
+          fornecedor: {
+            id: values.fornecedor_id
+          },
+          status: 'CRIADO'
+        }
+      
+        try {
+          axios.post(parsedEndpoint, requestFornecedor);
+  
+          toast({
+            title: "Operação realizada com sucesso",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
+        } catch(err) {
+          toast({
+            title: "Erro! Operação não realizada.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
+        }
+      } else {
+        const parsedEndpoint = orders_endpoint + productsOrders + insertOrder;
+
+        var aux = [];
+        values.produtos.map(produto => {
+          aux.push({
+            produto: {
+              id: produto.id
+            },
+            quantidade: produto.quantidade
+          })
+        })
+
+        var requestEstoque = {
+          itens: aux,
+          status: 'CRIADO'
+        }
+
+        try {
+          axios.post(parsedEndpoint, requestEstoque);
+  
+          toast({
+            title: "Operação realizada com sucesso",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
+        } catch(err) {
+          toast({
+            title: "Erro! Operação não realizada.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
         }
       }
-      const insertOrder = orders_endpoint + "/insert";
-      
-      try {
-        axios.post(insertOrder, request);
 
-        toast({
-          title: "Operação realizada com sucesso",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-          position: "top",
-        });
-      } catch(err) {
-        toast({
-          title: "Erro! Operação não realizada.",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-          position: "top",
-        });
-      }
+
     }
     const CloseModalSupplierIcon = document.getElementById(
       "CloseModalSupplierIcon"
@@ -266,7 +364,11 @@ const OrdersPage: React.FC = () => {
   };
 
   useEffect(() => {
-    getOrders();
+    async function init() {
+      await getProducts();
+      await getSuppliers();
+      await getOrders();
+    }
 
     const interval = setInterval(() => {
       if (window.innerWidth < 768) {
@@ -294,6 +396,7 @@ const OrdersPage: React.FC = () => {
       }
     }, 100);
 
+    init();
     return () => clearInterval(interval);
   }, []);
 
@@ -324,10 +427,12 @@ const OrdersPage: React.FC = () => {
           is_editing={isEditing}
           onCloseModalWorker={onCloseModalWorker}
         >
-          <SupplierForm
+          <OrderForm
             onSubmit={onSubmitOrderForm}
             is_editing={isEditing}
             initial_values={selectedInitialValues}
+            products={products}
+            suppliers={suppliers}
           />
         </BasicModal>
       </Flex>
@@ -357,7 +462,6 @@ const OrdersPage: React.FC = () => {
                   pedido.status.toLowerCase().includes(value.toLowerCase())
                 );
               }));
-              console.log(filtered)
               filtered.map(obj => {
                 if(obj.fornecedor === null) {
                   obj.tipo = 'RETIRADA';
@@ -383,7 +487,7 @@ const OrdersPage: React.FC = () => {
         }
         onClickTableRow={openInfoModal}
         onClickEdit={editSupplier}
-        onClickDelete={deleteSupplier}
+        onClickDelete={deleteOrder}
       />
     </Container>
   );

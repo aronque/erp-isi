@@ -16,13 +16,17 @@ import {
   FormErrorMessage,
   useToast
 } from "@chakra-ui/react";
+import { useAuth } from '../components/SessionManager';
 import { Field, Form, Formik } from "formik";
 import { EmailIcon, LockIcon } from "@chakra-ui/icons";
+
 
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const toast = useToast();
+
+  const { login } = useAuth();
 
   const handleShowClick = () => setShowPassword(!showPassword);
 
@@ -35,10 +39,14 @@ const LoginPage = () => {
       senha: values.password
     }
 
+
     try {
       await axios.post(loginEndpoint, request).then((res) => {
         if(res.status === 200) {
-          return window.location.href = "/home";
+          login({
+            id: res.data['id']
+          })
+          return window.location.href = "/whitePage";
         }
       });
       
