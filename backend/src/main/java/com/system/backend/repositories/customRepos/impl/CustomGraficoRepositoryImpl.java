@@ -17,7 +17,7 @@ public class CustomGraficoRepositoryImpl implements CustomGraficoRepository {
 
         //TODO tratar filtro por data
 
-        ResourceBundle bundle = ResourceBundle.getBundle("application-dev");
+        ResourceBundle bundle = ResourceBundle.getBundle("application-prod");
         PreparedStatement ps;
         ResultSet rs;
 
