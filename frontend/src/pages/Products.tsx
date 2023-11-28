@@ -14,10 +14,12 @@ import { AddIcon, Search2Icon } from "@chakra-ui/icons";
 import { ThemeContext } from "../providers/ThemeProvider";
 import { InfoModalProps } from "../components/InfoModal";
 import { useToast } from "@chakra-ui/react";
+import getSession from "../components/getSession";
 
 const products_endpoint = "http://localhost:8080/produtos";
 
 const ProductsPage: React.FC = () => {
+  const user = JSON.parse(getSession());
   const { currentTheme } = useContext(ThemeContext);
 
   const toast = useToast();
@@ -89,16 +91,29 @@ const ProductsPage: React.FC = () => {
     try {
       axios.delete(deleteProductEndpoint, {
         data: {
-          id: product.id
+          id: product.id,
+          requestUser: {
+            id: user['id']
+          }
         }
-      });
-
-      toast({
-        title: "Produto excluído com sucesso!",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-        position: "top",
+      }).then(res => {
+        if(res.data == 405) {
+          toast({
+            title: "Você não tem privilégios suficiente para acessar esta funcionalidade",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
+        } else {
+          toast({
+            title: "Operação realizada com sucesso. O relatório será enviado para o email inserido",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
+        }
       });
     } catch(err) {
       toast({
@@ -149,19 +164,32 @@ const ProductsPage: React.FC = () => {
           id: values.fornecedor_id
         },
         quantidade: values.quantidade,
-        preco: values.preco
+        preco: values.preco,
+        requestUser: {
+          id: user['id']
+        }
       }
 
       try {
 
-        axios.put(updateProductEndpoint, updateRequest);
-
-        toast({
-          title: "Produto editado com sucesso!",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-          position: "top",
+        axios.put(updateProductEndpoint, updateRequest).then(res => {
+          if(res.data == 405) {
+            toast({
+              title: "Você não tem privilégios suficiente para acessar esta funcionalidade",
+              status: "error",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+            });
+          } else {
+            toast({
+              title: "Operação realizada com sucesso. O relatório será enviado para o email inserido",
+              status: "success",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+            });
+          }
         });
       } catch(err) {
         toast({
@@ -184,19 +212,32 @@ const ProductsPage: React.FC = () => {
           id: values.fornecedor_id
         },
         quantidade: values.quantidade,
-        preco: values.preco
+        preco: values.preco,
+        requestUser: {
+          id: user['id']
+        }
       }
 
       try {
 
-        axios.post(insertProductEndpoint, request);
-
-        toast({
-          title: "Produto cadastrado com sucesso!",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-          position: "top",
+        axios.post(insertProductEndpoint, request).then(res => {
+          if(res.data == 405) {
+            toast({
+              title: "Você não tem privilégios suficiente para acessar esta funcionalidade",
+              status: "error",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+            });
+          } else {
+            toast({
+              title: "Operação realizada com sucesso. O relatório será enviado para o email inserido",
+              status: "success",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+            });
+          }
         });
       } catch (err) {
         toast({

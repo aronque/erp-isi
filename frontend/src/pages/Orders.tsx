@@ -15,7 +15,7 @@ import { ThemeContext } from "../providers/ThemeProvider";
 import { InfoModalProps } from "../components/InfoModal";
 import { useToast } from "@chakra-ui/react";
 import { OrderForm } from "../components/OrderForm";
-import { useAuth } from '../components/SessionManager';
+import getSession from "../components/getSession";
 
 const orders_endpoint = "http://localhost:8080/pedidos";
 const suppliersOrders = "Fornecedor";
@@ -24,8 +24,7 @@ const productsOrders = "Estoque";
 
 const OrdersPage: React.FC = () => {
 
-  const { user } = useAuth();
-
+  const user = JSON.parse(getSession());
   const { currentTheme } = useContext(ThemeContext);
   const toast = useToast();
   const [headers, setHeaders] = useState([
@@ -156,17 +155,31 @@ const OrdersPage: React.FC = () => {
     try{
       axios.delete(deleteOrder, {
         data: {
-          id: order.id
+          id: order.id,
+          requestUser: {
+            id: user['id']
+          }
+        }
+      }).then(res => {
+        if(res.data == 405) {
+          toast({
+            title: "Você não tem privilégios suficiente para acessar esta funcionalidade",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
+        } else {
+          toast({
+            title: "Operação realizada com sucesso",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
         }
       });
 
-      toast({
-        title: "Pedido excluído com sucesso!",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-        position: "top",
-      });
     } catch(err) {
       toast({
         title: "Erro! Não foi possível excluir o pedido!",
@@ -250,14 +263,24 @@ const OrdersPage: React.FC = () => {
       const updateOrder = orders_endpoint + "/update";
 
       try {
-        axios.put(updateOrder, request);
-
-        toast({
-          title: "Fornecedor editado com sucesso!",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-          position: "top",
+        axios.put(updateOrder, request).then(res => {
+          if(res.data == 405) {
+            toast({
+              title: "Você não tem privilégios suficiente para acessar esta funcionalidade",
+              status: "error",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+            });
+          } else {
+            toast({
+              title: "Operação realizada com sucesso",
+              status: "success",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+            });
+          }
         });
       } catch(err) {
         toast({
@@ -294,18 +317,31 @@ const OrdersPage: React.FC = () => {
           fornecedor: {
             id: values.fornecedor_id
           },
-          status: 'CRIADO'
+          status: 'CRIADO',
+          usuario: {
+            id: user['id']
+          }
         }
       
         try {
-          axios.post(parsedEndpoint, requestFornecedor);
-  
-          toast({
-            title: "Operação realizada com sucesso",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-            position: "top",
+          axios.post(parsedEndpoint, requestFornecedor).then((res) => {
+            if(res.data == 405) {
+              toast({
+                title: "Você não tem privilégios suficiente para acessar esta funcionalidade",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+                position: "top",
+              });
+            } else {
+              toast({
+                title: "Operação realizada com sucesso",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+                position: "top",
+              });
+            }
           });
         } catch(err) {
           toast({
@@ -331,19 +367,34 @@ const OrdersPage: React.FC = () => {
 
         var requestEstoque = {
           itens: aux,
-          status: 'CRIADO'
+          status: 'CRIADO',
+          usuario: {
+            id: user['id']
+          }
         }
 
         try {
-          axios.post(parsedEndpoint, requestEstoque);
-  
-          toast({
-            title: "Operação realizada com sucesso",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-            position: "top",
+          axios.post(parsedEndpoint, requestEstoque).then((res) => {
+            if(res.status === 405) {
+              toast({
+                title: "Você não tem privilégios suficiente para acessar esta funcionalidade",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+                position: "top",
+              });
+            } else {
+              toast({
+                title: "Operação realizada com sucesso",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+                position: "top",
+              });
+            }
           });
+  
+
         } catch(err) {
           toast({
             title: "Erro! Operação não realizada.",

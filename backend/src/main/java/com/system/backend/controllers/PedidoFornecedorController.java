@@ -3,6 +3,7 @@ package com.system.backend.controllers;
 import com.system.backend.entities.Pedido;
 import com.system.backend.entities.PedidoFornecedor;
 import com.system.backend.services.CRUDService;
+import com.system.backend.services.ControleAcessoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,14 @@ public class PedidoFornecedorController {
     @Qualifier("Pedido")
     CRUDService crudService;
 
+    @Autowired
+    ControleAcessoService accControlService;
+
     @PostMapping("/insert")
     public ResponseEntity createPedido(@RequestBody PedidoFornecedor pedido) {
+        if(!accControlService.temPersmissao(pedido.getId(), FUNC_CONST)) {
+            return ResponseEntity.ok("405");
+        }
         Object[] objAux = new Object[7];
         objAux[1] = pedido.getItems();
         objAux[2] = Date.from(Instant.now());
@@ -59,6 +66,9 @@ public class PedidoFornecedorController {
 
     @PutMapping("/update")
     public ResponseEntity updatePedido(@RequestBody PedidoFornecedor pedido) {
+        if(!accControlService.temPersmissao(pedido.getId(), FUNC_CONST)) {
+            return ResponseEntity.ok("405");
+        }
         PedidoFornecedor pedidoAux;
         Object[] objAux = new Object[7];
         objAux[0] = pedido.getId();
@@ -73,6 +83,9 @@ public class PedidoFornecedorController {
 
     @DeleteMapping("/delete")
     public ResponseEntity delete(@RequestBody PedidoFornecedor pedido) {
+        if(!accControlService.temPersmissao(pedido.getId(), FUNC_CONST)) {
+            return ResponseEntity.ok("405");
+        }
         Object[] objAux = new Object[7];
         objAux[0] = pedido.getId();
         objAux[1] = pedido.getItems();

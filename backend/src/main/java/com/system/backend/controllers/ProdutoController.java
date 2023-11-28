@@ -2,6 +2,7 @@ package com.system.backend.controllers;
 
 import com.system.backend.entities.Produto;
 import com.system.backend.services.CRUDService;
+import com.system.backend.services.ControleAcessoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,14 @@ public class ProdutoController {
     @Qualifier("Produto")
     CRUDService crudService;
 
+    @Autowired
+    ControleAcessoService accControlService;
+
     @PostMapping("/insert")
     public ResponseEntity createProduto(@RequestBody Produto produto) {
+        if(!accControlService.temPersmissao(produto.getRequestUser().getId(), FUNC_CONST)) {
+            return ResponseEntity.ok("405");
+        }
         Object[] objAux = new Object[5];
         objAux[1] = produto.getNome();
         objAux[2] = produto.getFornecedor();
@@ -49,6 +56,9 @@ public class ProdutoController {
 
     @PutMapping("/update")
     public ResponseEntity updateProduto(@RequestBody Produto produto) {
+        if(!accControlService.temPersmissao(produto.getRequestUser().getId(), FUNC_CONST)) {
+            return ResponseEntity.ok("405");
+        }
         Produto produtoAux;
         Object[] objAux = new Object[5];
         objAux[0] = produto.getId();
@@ -63,6 +73,9 @@ public class ProdutoController {
 
     @DeleteMapping("/delete")
     public ResponseEntity delete(@RequestBody Produto produto) {
+        if(!accControlService.temPersmissao(produto.getRequestUser().getId(), FUNC_CONST)) {
+            return ResponseEntity.ok("405");
+        }
         Object[] objAux = new Object[5];
         objAux[0] = produto.getId();
         objAux[1] = produto.getNome();

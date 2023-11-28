@@ -12,17 +12,16 @@ import { AuthProvider } from './components/SessionManager';
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
-root.render(
+root.render( <AuthProvider>
   <React.StrictMode>
-          <AuthProvider>
     <ChakraProvider>
       <ThemeProvider>
       <App />
       </ThemeProvider>
     </ChakraProvider>
-    </AuthProvider>
 
   </React.StrictMode>
+  </AuthProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

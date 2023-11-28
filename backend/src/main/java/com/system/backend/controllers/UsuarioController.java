@@ -4,6 +4,7 @@ import com.system.backend.entities.LoginAux;
 import com.system.backend.entities.MailInfos;
 import com.system.backend.entities.Usuario;
 import com.system.backend.services.CRUDService;
+import com.system.backend.services.ControleAcessoService;
 import com.system.backend.services.EmailService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,14 @@ public class UsuarioController {
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    ControleAcessoService accControlService;
+
     @PostMapping("/insert")
     public ResponseEntity createUsuario(@RequestBody Usuario usuario) {
+        if(!accControlService.temPersmissao(usuario.getRequestUser().getId(), FUNC_CONST)) {
+            return ResponseEntity.ok("405");
+        }
         Object[] objAux = new Object[5];
         objAux[1] = usuario.getNome();
         objAux[2] = usuario.getEmail();
@@ -63,6 +70,9 @@ public class UsuarioController {
 
     @PutMapping("/update")
     public ResponseEntity updateUsuario(@RequestBody Usuario usuario) {
+        if(!accControlService.temPersmissao(usuario.getRequestUser().getId(), FUNC_CONST)) {
+            return ResponseEntity.ok("405");
+        }
         Usuario usuarioAux;
         Object[] objAux = new Object[5];
         objAux[0] = usuario.getId();
@@ -77,6 +87,9 @@ public class UsuarioController {
 
     @DeleteMapping("/delete")
     public ResponseEntity delete(@RequestBody Usuario usuario) {
+        if(!accControlService.temPersmissao(usuario.getRequestUser().getId(), FUNC_CONST)) {
+            return ResponseEntity.ok("405");
+        }
         Object[] objAux = new Object[5];
         objAux[0] = usuario.getId();
         objAux[1] = usuario.getNome();

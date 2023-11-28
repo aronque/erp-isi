@@ -29,6 +29,9 @@ public class Usuario implements Serializable {
     @Column(name = "TIPO_ID")
     private Tipo tipo;
 
+    @Transient
+    private Usuario requestUser;
+
     public Usuario(){
     }
 
@@ -82,6 +85,13 @@ public class Usuario implements Serializable {
         this.tipo = tipo;
     }
 
+    public Usuario getRequestUser() {
+        return requestUser;
+    }
+
+    public void setRequestUser(Usuario requestUser) {
+        this.requestUser = requestUser;
+    }
 
     public enum Tipo {
 

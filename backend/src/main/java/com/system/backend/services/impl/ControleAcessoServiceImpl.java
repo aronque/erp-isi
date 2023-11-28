@@ -4,9 +4,11 @@ import com.system.backend.entities.Usuario;
 import com.system.backend.repositories.UsuarioRepository;
 import com.system.backend.services.ControleAcessoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@Component
 public class ControleAcessoServiceImpl implements ControleAcessoService {
 
 
@@ -31,6 +33,6 @@ public class ControleAcessoServiceImpl implements ControleAcessoService {
 
     @Override
     public boolean temPersmissao(Long idUsuario, String funcionalidade) {
-        return funcMap.get(funcionalidade).contains((repository.hasPermission(idUsuario)).intValue());
+        return funcMap.get(funcionalidade).contains((repository.findById(idUsuario)).get().getTipo().intValue);
     }
 }

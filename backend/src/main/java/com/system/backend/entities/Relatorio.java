@@ -22,6 +22,8 @@ public abstract class Relatorio implements Serializable {
 
     private String email;
 
+    private Usuario requestUser;
+
     public Workbook getWb() {
         return wb;
     }
@@ -60,6 +62,14 @@ public abstract class Relatorio implements Serializable {
 
     public void setNomeRelatorio(String nomeRelatorio) {
         this.nomeRelatorio = nomeRelatorio;
+    }
+
+    public Usuario getRequestUser() {
+        return requestUser;
+    }
+
+    public void setRequestUser(Usuario requestUser) {
+        this.requestUser = requestUser;
     }
 
     public void print(List<String> rows) throws IOException {

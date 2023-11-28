@@ -11,9 +11,13 @@ import {
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { EmailIcon, LockIcon } from "@chakra-ui/icons";
-
+import getSession from "../components/getSession";
 
 const WhitePage = () => {
+
+  const user = getSession();
+  console.log(user)
+
   const [showPassword, setShowPassword] = useState(false);
   const toast = useToast();
 

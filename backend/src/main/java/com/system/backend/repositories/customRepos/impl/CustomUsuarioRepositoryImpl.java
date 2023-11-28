@@ -5,8 +5,15 @@ import com.system.backend.repositories.customRepos.CustomUsuarioRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.postgresql.copy.CopyManager;
+import org.postgresql.core.BaseConnection;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.*;
 import java.util.List;
+import java.util.ResourceBundle;
 
 @SuppressWarnings("ALL")
 public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
@@ -53,6 +60,8 @@ public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
 
     @Override
     public Long hasPermission(Long id) {
+
+
         return null;
     }
 

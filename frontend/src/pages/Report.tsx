@@ -23,9 +23,12 @@ import { Field, Form, Formik } from "formik";
 import { ThemeContext } from "../providers/ThemeProvider";
 import { EmailIcon, LockIcon } from "@chakra-ui/icons";
 import { Reports } from "../components/utils/reports";
+import getSession from "../components/getSession";
 
 
 const ReportPage = () => {
+  const user = JSON.parse(getSession());
+  console.log(user)
   const { currentTheme } = useContext(ThemeContext);
 
   const toast = useToast();
@@ -38,14 +41,25 @@ const ReportPage = () => {
     var requestEndpoint = reportsEndpoint + aux.endPoint;
 
     var request = {
-      email: values.email
+      email: values.email,
+      requestUser: {
+        id: user['id']
+      }
     }
 
     try {
-      await axios.post(requestEndpoint, request).then((res) => {
-        if(res.status === 200) {
-          toast ({
-            title: "Sucesso! O relatório será enviado para o email inserido.",
+      await axios.post(requestEndpoint, request).then(res => {
+        if(res.data == 405) {
+          toast({
+            title: "Você não tem privilégios suficiente para acessar esta funcionalidade",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
+        } else {
+          toast({
+            title: "Operação realizada com sucesso. O relatório será enviado para o email inserido",
             status: "success",
             duration: 3000,
             isClosable: true,

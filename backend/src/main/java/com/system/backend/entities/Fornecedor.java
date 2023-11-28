@@ -29,6 +29,9 @@ public class Fornecedor implements Serializable {
     @OneToOne(cascade = CascadeType.PERSIST)
     private Endereco endereco;
 
+    @Transient
+    private Usuario requestUser;
+
     public Fornecedor() {
     }
 
@@ -82,4 +85,11 @@ public class Fornecedor implements Serializable {
         this.endereco = endereco;
     }
 
+    public Usuario getRequestUser() {
+        return requestUser;
+    }
+
+    public void setRequestUser(Usuario requestUser) {
+        this.requestUser = requestUser;
+    }
 }

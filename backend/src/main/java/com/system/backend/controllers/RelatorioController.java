@@ -1,6 +1,7 @@
 package com.system.backend.controllers;
 
 import com.system.backend.entities.*;
+import com.system.backend.services.ControleAcessoService;
 import com.system.backend.services.EmailService;
 import com.system.backend.services.GetInjectedRelatorioService;
 import com.system.backend.services.RelatorioService;
@@ -20,14 +21,22 @@ import java.util.function.Function;
 @RequestMapping("/relatorios")
 public class RelatorioController {
 
+    private static final String FUNC_CONST = "RELATORIO";
+
     RelatorioService service;
 
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    ControleAcessoService accControlService;
+
 
     @PostMapping("/produtoFornecedor")
     public ResponseEntity getRelatorioProdForn(@RequestBody RelatorioProdForn relatorioParam) throws IOException {
+        if(!accControlService.temPersmissao(relatorioParam.getRequestUser().getId(), FUNC_CONST)) {
+            return ResponseEntity.ok("405");
+        }
         service = GetInjectedRelatorioService.getServiceInstance("Prod_Forn");
         List<String> linhas = service.getRelatorioCsv();
         Relatorio relatorio = new RelatorioProdForn();
@@ -46,6 +55,9 @@ public class RelatorioController {
 
     @PostMapping("/produtoEstoque")
     public ResponseEntity getRelatorioProdEstoque(@RequestBody RelatorioProdEstoque relatorioParam) throws IOException {
+        if(!accControlService.temPersmissao(relatorioParam.getRequestUser().getId(), FUNC_CONST)) {
+            return ResponseEntity.ok("405");
+        }
         service = GetInjectedRelatorioService.getServiceInstance("Prod_Estoque");
         List<String> linhas = service.getRelatorioCsv();
         Relatorio relatorio = new RelatorioProdEstoque();
@@ -64,6 +76,9 @@ public class RelatorioController {
 
     @PostMapping("/pedidosPendente")
     public ResponseEntity getRelatorioPedidoPendente(@RequestBody RelatorioPedidoPendente relatorioParam) throws IOException {
+        if(!accControlService.temPersmissao(relatorioParam.getRequestUser().getId(), FUNC_CONST)) {
+            return ResponseEntity.ok("405");
+        }
         service = GetInjectedRelatorioService.getServiceInstance("Pedido_Pendente");
         List<String> linhas = service.getRelatorioCsv();
         Relatorio relatorio = new RelatorioPedidoPendente();
@@ -82,6 +97,9 @@ public class RelatorioController {
 
     @PostMapping("/vendasProduto")
     public ResponseEntity getRelatorioVendasProduto(@RequestBody RelatorioVendasProduto relatorioParam) throws IOException {
+        if(!accControlService.temPersmissao(relatorioParam.getRequestUser().getId(), FUNC_CONST)) {
+            return ResponseEntity.ok("405");
+        }
         service = GetInjectedRelatorioService.getServiceInstance("Vendas_Produto");
         List<String> linhas = service.getRelatorioCsv();
         Relatorio relatorio = new RelatorioVendasProduto();
@@ -100,6 +118,9 @@ public class RelatorioController {
 
     @PostMapping("/histEstoque")
     public ResponseEntity getRelatorioHistEstoque(@RequestBody RelatorioHistEstoque relatorioParam) throws IOException {
+        if(!accControlService.temPersmissao(relatorioParam.getRequestUser().getId(), FUNC_CONST)) {
+            return ResponseEntity.ok("405");
+        }
         service = GetInjectedRelatorioService.getServiceInstance("Hist_Estoque");
         List<String> linhas = service.getRelatorioCsv();
         Relatorio relatorio = new RelatorioHistEstoque();

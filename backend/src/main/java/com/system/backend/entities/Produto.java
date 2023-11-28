@@ -30,6 +30,8 @@ public class Produto implements Serializable {
     @Column(name = "PRECO")
     private Double preco;
 
+    @Transient
+    private Usuario requestUser;
 
     public Produto(){
     }
@@ -84,4 +86,11 @@ public class Produto implements Serializable {
         this.preco = preco;
     }
 
+    public Usuario getRequestUser() {
+        return requestUser;
+    }
+
+    public void setRequestUser(Usuario requestUser) {
+        this.requestUser = requestUser;
+    }
 }

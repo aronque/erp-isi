@@ -15,10 +15,12 @@ import { ThemeContext } from "../providers/ThemeProvider";
 import { InfoModalProps } from "../components/InfoModal";
 import { useToast } from "@chakra-ui/react";
 import {Types} from "../components/utils/userTypes";
+import getSession from "../components/getSession";
 
 const users_endpoint = "http://localhost:8080/usuarios";
 
 const WorkersPage: React.FC = () => {
+  const user = JSON.parse(getSession());
   const { currentTheme } = useContext(ThemeContext);
   const toast = useToast();
   const [headers, setHeaders] = useState([
@@ -70,13 +72,44 @@ const WorkersPage: React.FC = () => {
 
   const deleteWorker = (worker) => {
     console.log("deleteWorker", worker);
-    toast({
-      title: "Usuário excluído com sucesso!",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      position: "top",
-    });
+
+    var request = {
+      id: worker.id,
+      requestUser: {
+        id: user['id']
+      }
+    }
+
+    try {
+      axios.delete(users_endpoint + "/delete", {
+        data: {
+          id: worker.id,
+          requestUser: {
+            id: user['id']
+          }
+        }
+      }).then(res => {
+        if(res.data == 405) {
+          toast({
+            title: "Você não tem privilégios suficiente para acessar esta funcionalidade",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
+        } else {
+          toast({
+            title: "Operação realizada com sucesso",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
+        }
+      });
+    } catch(err) {
+
+    }
   };
 
   const openInfoModal = (values) => {
@@ -112,20 +145,33 @@ const WorkersPage: React.FC = () => {
         id: values.id,
         nome: values.nome,
         email: values.email,
-        tipo: values.tipo
+        tipo: values.tipo,
+        requestUser: {
+          id: user['id']
+        }
       }
       const updateUserEndpoint = users_endpoint + "/update";
 
 
       try {
-        axios.put(updateUserEndpoint, request);
-
-        toast({
-          title: "Usuário atualizado com sucesso!",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-          position: "top",
+        axios.put(updateUserEndpoint, request).then((res) => {
+          if(res.data == 405) {
+            toast({
+              title: "Você não tem privilégios suficiente para acessar esta funcionalidade",
+              status: "error",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+            });
+          } else {
+            toast({
+              title: "Operação realizada com sucesso",
+              status: "success",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+            });
+          }
         });
       } catch(err) {
         toast({
@@ -142,19 +188,32 @@ const WorkersPage: React.FC = () => {
         nome: values.nome,
         email: values.email,
         senha: values.senha,
-        tipo: values.tipo
+        tipo: values.tipo,
+        requestUser: {
+          id: user['id']
+        }
       }
       const insertUserEndpoint = users_endpoint + "/insert";
 
       try {
-        axios.post(insertUserEndpoint, requestInsert);
-
-        toast({
-          title: "Usuário cadastrado com sucesso!",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-          position: "top",
+        axios.post(insertUserEndpoint, requestInsert).then((res) => {
+          if(res.data == 405) {
+            toast({
+              title: "Você não tem privilégios suficiente para acessar esta funcionalidade",
+              status: "error",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+            });
+          } else {
+            toast({
+              title: "Operação realizada com sucesso",
+              status: "success",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+            });
+          }
         });
       } catch(err) {
         toast({

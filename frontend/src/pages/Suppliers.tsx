@@ -14,10 +14,12 @@ import { AddIcon, Search2Icon } from "@chakra-ui/icons";
 import { ThemeContext } from "../providers/ThemeProvider";
 import { InfoModalProps } from "../components/InfoModal";
 import { useToast } from "@chakra-ui/react";
+import getSession from "../components/getSession";
 
 const suppliers_endpoint = "http://localhost:8080/fornecedores";
 
 const SuppliersPage: React.FC = () => {
+  const user = getSession();
   const { currentTheme } = useContext(ThemeContext);
   const toast = useToast();
   const [headers, setHeaders] = useState([
@@ -75,16 +77,29 @@ const SuppliersPage: React.FC = () => {
     try{
       axios.delete(deleteSupplier, {
         data: {
-          id: supplier.id
+          id: supplier.id,
+          requestUser: {
+            id: user['id']
+          }
         }
-      });
-
-      toast({
-        title: "Fornecedor excluído com sucesso!",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-        position: "top",
+      }).then(res => {
+        if(res.data == 405) {
+          toast({
+            title: "Você não tem privilégios suficiente para acessar esta funcionalidade",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
+        } else {
+          toast({
+            title: "Operação realizada com sucesso. O relatório será enviado para o email inserido",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
+        }
       });
     } catch(err) {
       toast({
@@ -149,19 +164,32 @@ const SuppliersPage: React.FC = () => {
           cidade: values.cidade,
           estado: values.estado,
           cep: values.cep
+        },
+        requestUser: {
+          id: user['id']
         }
       }
       const updateSupplier = suppliers_endpoint + "/update";
 
       try {
-        axios.put(updateSupplier, request);
-
-        toast({
-          title: "Fornecedor editado com sucesso!",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-          position: "top",
+        axios.put(updateSupplier, request).then(res => {
+          if(res.data == 405) {
+            toast({
+              title: "Você não tem privilégios suficiente para acessar esta funcionalidade",
+              status: "error",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+            });
+          } else {
+            toast({
+              title: "Operação realizada com sucesso. O relatório será enviado para o email inserido",
+              status: "success",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+            });
+          }
         });
       } catch(err) {
         toast({
@@ -186,19 +214,32 @@ const SuppliersPage: React.FC = () => {
           cidade: values.cidade,
           estado: values.estado,
           cep: values.cep
+        },
+        requestUser: {
+          id: user['id']
         }
       }
       const insertSupplier = suppliers_endpoint + "/insert";
       
       try {
-        axios.post(insertSupplier, request);
-
-        toast({
-          title: "Operação realizada com sucesso",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-          position: "top",
+        axios.post(insertSupplier, request).then(res => {
+          if(res.data == 405) {
+            toast({
+              title: "Você não tem privilégios suficiente para acessar esta funcionalidade",
+              status: "error",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+            });
+          } else {
+            toast({
+              title: "Operação realizada com sucesso. O relatório será enviado para o email inserido",
+              status: "success",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+            });
+          }
         });
       } catch(err) {
         toast({

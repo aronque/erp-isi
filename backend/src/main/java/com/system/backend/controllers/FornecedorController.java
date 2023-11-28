@@ -2,6 +2,7 @@ package com.system.backend.controllers;
 
 import com.system.backend.entities.Fornecedor;
 import com.system.backend.services.CRUDService;
+import com.system.backend.services.ControleAcessoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +25,14 @@ public class FornecedorController {
     @Qualifier("Endereco")
     CRUDService enderecoService;
 
+    @Autowired
+    ControleAcessoService accControlService;
+
     @PostMapping("/insert")
     public ResponseEntity createFornecedor(@RequestBody Fornecedor fornecedor) {
+        if(!accControlService.temPersmissao(fornecedor.getRequestUser().getId(), FUNC_CONST)) {
+            return ResponseEntity.ok("405");
+        }
         Object[] objAux = new Object[5];
         objAux[0] = fornecedor.getId();
         objAux[1] = fornecedor.getNome();
@@ -57,6 +64,9 @@ public class FornecedorController {
 
     @PutMapping("/update")
     public ResponseEntity updateFornecedor(@RequestBody Fornecedor fornecedor) {
+        if(!accControlService.temPersmissao(fornecedor.getRequestUser().getId(), FUNC_CONST)) {
+            return ResponseEntity.ok("405");
+        }
         Fornecedor fornecedorAux;
         Object[] objAux = new Object[5];
         objAux[0] = fornecedor.getId();
@@ -71,6 +81,9 @@ public class FornecedorController {
 
     @DeleteMapping("/delete")
     public ResponseEntity delete(@RequestBody Fornecedor fornecedor) {
+        if(!accControlService.temPersmissao(fornecedor.getRequestUser().getId(), FUNC_CONST)) {
+            return ResponseEntity.ok("405");
+        }
         Object[] objAux = new Object[5];
         objAux[0] = fornecedor.getId();
         objAux[1] = fornecedor.getNome();

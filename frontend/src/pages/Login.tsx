@@ -16,34 +16,56 @@ import {
   FormErrorMessage,
   useToast
 } from "@chakra-ui/react";
-import { useAuth } from '../components/SessionManager';
+import  useAuth  from '../components/useAuth';
 import { Field, Form, Formik } from "formik";
 import { EmailIcon, LockIcon } from "@chakra-ui/icons";
+import getSession from "../components/getSession";
 
 
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const toast = useToast();
+  const {user, login, logout } = useAuth();
 
   const handleShowClick = () => setShowPassword(!showPassword);
 
   async function onLoginSubmit(values: any, actions: any) {
     
-    const loginEndpoint = "http://localhost:8080/usuarios/entrar"; 
+    logout()
+    
+    const logado:any = await login({
+      id: null,
+      email: values.email,
+      password: values.password
+    })
 
-    var request = {
-      user: values.email,
-      senha: values.password
+    const localUser = getSession();
+    console.log(localUser)
+    if(!logado) {
+      toast ({
+        title: "Usuário não localizado",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    } else {
+      toast ({
+        title: "Usuário localizado",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+      return window.location.href = "/whitePage";
     }
 
-
     try {
-      await axios.post(loginEndpoint, request).then((res) => {
-        if(res.status === 200) {
-          return window.location.href = "/whitePage";
-        }
-      });
+      // await axios.post(loginEndpoint, request).then((res) => {
+      //   if(res.status === 200) {
+      //   }
+      // });
       
     } catch(err) {
       toast ({
