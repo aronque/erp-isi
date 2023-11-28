@@ -11,8 +11,8 @@ import java.util.List;
 public class RelatorioHistEstoque extends Relatorio {
 
 
-    private static final String PATH_CSV = "\\src\\main\\resources\\temp\\hist_estoque.csv";
-    private static final String PATH_XLS = "\\src\\main\\resources\\temp\\hist_estoque.xlsx";
+    private static final String PATH_CSV = "\\src\\main\\resources\\tmp\\hist_estoque.csv";
+    private static final String PATH_XLS = "\\src\\main\\resources\\tmp\\hist_estoque.xlsx";
     private static final String VW_NAME = "VW_HIST_ESTOQUE";
 
     public RelatorioHistEstoque() {

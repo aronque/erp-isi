@@ -32,7 +32,7 @@ const ReportPage = () => {
 
   async function onBuildSubmit(values: any, actions: any) {
     
-    const reportsEndpoint = "http://localhost:8080/relatorios"; 
+    const reportsEndpoint = "https://erp-isi-backend-3bfe7b8310b8.herokuapp.com/relatorios"; 
 
     const aux = Reports.find((report) => report.id == values.relatorio)
     var requestEndpoint = reportsEndpoint + aux.endPoint;

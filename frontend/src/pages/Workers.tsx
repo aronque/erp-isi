@@ -16,7 +16,7 @@ import { InfoModalProps } from "../components/InfoModal";
 import { useToast } from "@chakra-ui/react";
 import {Types} from "../components/utils/userTypes";
 
-const users_endpoint = "http://localhost:8080/usuarios";
+const users_endpoint = "https://erp-isi-backend-3bfe7b8310b8.herokuapp.com/usuarios";
 
 const WorkersPage: React.FC = () => {
   const { currentTheme } = useContext(ThemeContext);

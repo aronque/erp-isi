@@ -11,8 +11,8 @@ import java.util.List;
 public class RelatorioVendasProduto extends Relatorio {
 
 
-    private static final String PATH_CSV = "\\src\\main\\resources\\temp\\vendas_produto.csv";
-    private static final String PATH_XLS = "\\src\\main\\resources\\temp\\vendas_produto.xlsx";
+    private static final String PATH_CSV = "\\src\\main\\resources\\tmp\\vendas_produto.csv";
+    private static final String PATH_XLS = "\\src\\main\\resources\\tmp\\vendas_produto.xlsx";
     private static final String VW_NAME = "VW_VENDAS_PRODUTO";
 
     public RelatorioVendasProduto() {

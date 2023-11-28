@@ -26,7 +26,7 @@ const HomePage: React.FC = () => {
   const [beginDate, setBeginDate] = React.useState<Date | null>(null);
   const [endDate, setEndDate] = React.useState<Date | null>(null);
 
-  const graficosEndpoint = "http://localhost:8080/graficos"
+  const graficosEndpoint = "https://erp-isi-backend-3bfe7b8310b8.herokuapp.com/graficos"
   const graficoProdPedido = graficosEndpoint + "/prodPedido";
   const graficoMovMes = graficosEndpoint + "/movMes";
   const graficoStatusPedidos = graficosEndpoint + "/statusPedidos";
@@ -37,44 +37,44 @@ const HomePage: React.FC = () => {
   }
 
   useEffect(() => {
-    getProdPedData();
-    getStatusPedData();
-    getMovMesData();
+    // getProdPedData();
+    // getStatusPedData();
+    // getMovMesData();
 
     setProdutosPedido(prodPedBodyData);
     setMovMes(movMesData);
     setStatusPed(statusPedData);
   }, []);
 
-  const getProdPedData = async () => {
-    await axios.post(graficoProdPedido, request).then(response => {
-      var index = 0;
-      for(const [key, value] of Object.entries(response.data)) {
+  // const getProdPedData = async () => {
+  //   await axios.post(graficoProdPedido, request).then(response => {
+  //     var index = 0;
+  //     for(const [key, value] of Object.entries(response.data)) {
 
-        prodPedBodyData[index++] = {prod: key, quantidade: value};
-      }
-    })
-  }
+  //       prodPedBodyData[index++] = {prod: key, quantidade: value};
+  //     }
+  //   })
+  // }
 
-  const getMovMesData = async () => {
-    await axios.post(graficoMovMes, request).then(response => {
-      var index = 0;
-      for(const [key, value] of Object.entries(response.data)) {
+  // const getMovMesData = async () => {
+  //   await axios.post(graficoMovMes, request).then(response => {
+  //     var index = 0;
+  //     for(const [key, value] of Object.entries(response.data)) {
 
-        prodPedBodyData[index++] = {mes: key, quantidade: value};
-      }
-    })
-  }
+  //       prodPedBodyData[index++] = {mes: key, quantidade: value};
+  //     }
+  //   })
+  // }
 
-  const getStatusPedData = async () => {
-    await axios.post(graficoStatusPedidos, request).then(response => {
-      var index = 0;
-      for(const [key, value] of Object.entries(response.data)) {
+  // const getStatusPedData = async () => {
+  //   await axios.post(graficoStatusPedidos, request).then(response => {
+  //     var index = 0;
+  //     for(const [key, value] of Object.entries(response.data)) {
 
-        prodPedBodyData[index++] = {status: key, quantidade: value};
-      }
-    })
-  }
+  //       prodPedBodyData[index++] = {status: key, quantidade: value};
+  //     }
+  //   })
+  // }
 
   //request gráfico relação quantidade de Pedidos por Produto
   const [produtosPedido, setProdutosPedido] = React.useState<any[]>([...prodPedBodyData]);

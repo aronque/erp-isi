@@ -12,8 +12,8 @@ import java.util.List;
 public class RelatorioProdForn extends Relatorio {
 
 
-    private static final String PATH_CSV = "\\src\\main\\resources\\temp\\fornecedor_produtos.csv";
-    private static final String PATH_XLS = "\\src\\main\\resources\\temp\\fornecedor_produtos.xlsx";
+    private static final String PATH_CSV = "\\src\\main\\resources\\tmp\\fornecedor_produtos.csv";
+    private static final String PATH_XLS = "\\src\\main\\resources\\tmp\\fornecedor_produtos.xlsx";
     private static final String VW_NAME = "VW_FORNECEDOR_PRODUTO";
 
 

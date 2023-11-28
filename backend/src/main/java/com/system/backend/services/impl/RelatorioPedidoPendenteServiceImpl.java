@@ -12,7 +12,7 @@ import java.util.List;
 @Component("Pedido_Pendente")
 public class RelatorioPedidoPendenteServiceImpl implements RelatorioService {
 
-    private static final String PATH = "\\src\\main\\resources\\temp\\pedidos_pendente.csv";
+    private static final String PATH = "\\src\\main\\resources\\tmp\\pedidos_pendente.csv";
 
     @Autowired
     CustomRelatorioRepository repository;

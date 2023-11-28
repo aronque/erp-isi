@@ -13,7 +13,7 @@ import java.util.List;
 @Component("Vendas_Produto")
 public class RelatorioVendasProdutoServiceImpl implements RelatorioService {
 
-    private static final String PATH = "\\src\\main\\resources\\temp\\vendas_produto.csv";
+    private static final String PATH = "\\src\\main\\resources\\tmp\\vendas_produto.csv";
 
     @Autowired
     CustomRelatorioRepository repository;

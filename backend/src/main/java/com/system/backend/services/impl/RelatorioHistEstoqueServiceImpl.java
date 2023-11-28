@@ -12,7 +12,7 @@ import java.util.List;
 @Component("Hist_Estoque")
 public class RelatorioHistEstoqueServiceImpl implements RelatorioService {
 
-    private static final String PATH = "\\src\\main\\resources\\temp\\hist_estoque.csv";
+    private static final String PATH = "\\src\\main\\resources\\tmp\\hist_estoque.csv";
 
     @Autowired
     CustomRelatorioRepository repository;

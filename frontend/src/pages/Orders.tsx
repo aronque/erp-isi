@@ -17,7 +17,7 @@ import { useToast } from "@chakra-ui/react";
 import { OrderForm } from "../components/OrderForm";
 import { useAuth } from '../components/SessionManager';
 
-const orders_endpoint = "http://localhost:8080/pedidos";
+const orders_endpoint = "https://erp-isi-backend-3bfe7b8310b8.herokuapp.com/pedidos";
 const suppliersOrders = "Fornecedor";
 const productsOrders = "Estoque";
 
@@ -60,7 +60,7 @@ const OrdersPage: React.FC = () => {
   const [suppliersFetched, setSuppliersFetched] = useState(false);
 
   const getProducts: () => Promise<any> = () => {
-    const productsEndpoint = "http://localhost:8080/produtos";
+    const productsEndpoint = "https://erp-isi-backend-3bfe7b8310b8.herokuapp.com/produtos";
 
     // Verifica se os dados já foram buscados
     if (productsFetched) {
@@ -75,7 +75,7 @@ const OrdersPage: React.FC = () => {
   };
 
   const getSuppliers: () => Promise<any> = () => {
-    const suppliersEndpoint = "http://localhost:8080/fornecedores";
+    const suppliersEndpoint = "https://erp-isi-backend-3bfe7b8310b8.herokuapp.com/fornecedores";
 
     // Verifica se os dados já foram buscados
     if (suppliersFetched) {
