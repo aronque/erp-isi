@@ -27,17 +27,12 @@ public class GraficoController {
     public ResponseEntity getRelatorioProdForn(@RequestBody Grafico grafico) throws IOException {
         List<Map<String, Integer>> resultList = new ArrayList<>();
 
-        Map<String, Integer> maptest = new HashMap<>();
-        maptest.put("value1", 2);
-        maptest.put("1124", 102);
+        Grafico response;
 
+        grafico.setVwName("VW_PRODUTOS_PEDIDOS");
+        response = service.getData(grafico);
 
-//        Grafico response;
-//
-//        grafico.setVwName("VW_PRODUTOS_PEDIDOS");
-//        response = service.getData(grafico);
-
-        return ResponseEntity.ok(maptest);
+        return ResponseEntity.ok(response.getXy());
     }
 
     @PostMapping("/movMes")

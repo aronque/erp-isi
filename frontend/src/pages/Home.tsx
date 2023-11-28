@@ -37,44 +37,44 @@ const HomePage: React.FC = () => {
   }
 
   useEffect(() => {
-    // getProdPedData();
-    // getStatusPedData();
-    // getMovMesData();
+    getProdPedData();
+    getStatusPedData();
+    getMovMesData();
 
     setProdutosPedido(prodPedBodyData);
     setMovMes(movMesData);
     setStatusPed(statusPedData);
   }, []);
 
-  // const getProdPedData = async () => {
-  //   await axios.post(graficoProdPedido, request).then(response => {
-  //     var index = 0;
-  //     for(const [key, value] of Object.entries(response.data)) {
+  const getProdPedData = async () => {
+    await axios.post(graficoProdPedido, request).then(response => {
+      var index = 0;
+      for(const [key, value] of Object.entries(response.data)) {
+        console.log(key, value)
+        prodPedBodyData[index++] = {prod: key, quantidade: value};
+      }
+    })
+  }
 
-  //       prodPedBodyData[index++] = {prod: key, quantidade: value};
-  //     }
-  //   })
-  // }
+  const getMovMesData = async () => {
+    await axios.post(graficoMovMes, request).then(response => {
+      var index = 0;
+      for(const [key, value] of Object.entries(response.data)) {
+        console.log(key, value)
+        movMesData[index++] = {mes: key, quantidade: value};
+      }
+    })
+  }
 
-  // const getMovMesData = async () => {
-  //   await axios.post(graficoMovMes, request).then(response => {
-  //     var index = 0;
-  //     for(const [key, value] of Object.entries(response.data)) {
-
-  //       prodPedBodyData[index++] = {mes: key, quantidade: value};
-  //     }
-  //   })
-  // }
-
-  // const getStatusPedData = async () => {
-  //   await axios.post(graficoStatusPedidos, request).then(response => {
-  //     var index = 0;
-  //     for(const [key, value] of Object.entries(response.data)) {
-
-  //       prodPedBodyData[index++] = {status: key, quantidade: value};
-  //     }
-  //   })
-  // }
+  const getStatusPedData = async () => {
+    await axios.post(graficoStatusPedidos, request).then(response => {
+      var index = 0;
+      for(const [key, value] of Object.entries(response.data)) {
+        console.log(key, value)
+        statusPedData[index++] = {status: key, quantidade: value};
+      }
+    })
+  }
 
   //request gráfico relação quantidade de Pedidos por Produto
   const [produtosPedido, setProdutosPedido] = React.useState<any[]>([...prodPedBodyData]);
