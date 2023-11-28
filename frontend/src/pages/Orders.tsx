@@ -156,7 +156,7 @@ const OrdersPage: React.FC = () => {
       axios.delete(deleteOrder, {
         data: {
           id: order.id,
-          requestUser: {
+          usuario: {
             id: user['id']
           }
         }
@@ -227,9 +227,9 @@ const OrdersPage: React.FC = () => {
         } else {
           const productsMap = values["items"].map((item, index) => {
             if(index < values["items"].length - 1) {
-              return item["produto"]["nome"] + " | "
+              return item["produto"]["nome"] + ": "+ item["quantidade"] +  " | "
             } else {
-              return item["produto"]["nome"]
+              return item["produto"]["nome"] + ": "+ item["quantidade"]
             }
           })
           data.push({
