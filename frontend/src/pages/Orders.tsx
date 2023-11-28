@@ -197,8 +197,8 @@ const OrdersPage: React.FC = () => {
     console.log("openInfoModal", values);
 
     const data = [];
-    const titles = ["ID", "Status", "Tipo", "Data", "Usuário", "Fornecedor"];
-    const keys = ["id", "status", "tipo", "data", "nome", "nome"];
+    const titles = ["ID", "Status", "Tipo", "Data", "Usuário", "Fornecedor", "Produtos"];
+    const keys = ["id", "status", "tipo", "data", "nome", "nome", "produtos"];
     console.log("openInfoModal", values);
 
     titles.forEach((title, index) => {
@@ -216,13 +216,25 @@ const OrdersPage: React.FC = () => {
             title,
             content: values["usuario"][keys[index]]
           })
-        } else {
+        } else if(index < 6) {
           if(values["fornecedor"] === null) {
             return;
           }
           data.push({
             title,
             content: values["fornecedor"][keys[index]]
+          })
+        } else {
+          const productsMap = values["items"].map((item, index) => {
+            if(index < values["items"].length - 1) {
+              return item["produto"]["nome"] + " | "
+            } else {
+              return item["produto"]["nome"]
+            }
+          })
+          data.push({
+            title,
+            content: [...productsMap]
           })
         }
       }
