@@ -26,7 +26,7 @@ const HomePage: React.FC = () => {
   const [beginDate, setBeginDate] = React.useState<Date | null>(null);
   const [endDate, setEndDate] = React.useState<Date | null>(null);
 
-  const graficosEndpoint = "https://erp-isi-backend-3bfe7b8310b8.herokuapp.com/graficos"
+  const graficosEndpoint = "http://localhost:8080/graficos"
   const graficoProdPedido = graficosEndpoint + "/prodPedido";
   const graficoMovMes = graficosEndpoint + "/movMes";
   const graficoStatusPedidos = graficosEndpoint + "/statusPedidos";

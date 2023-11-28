@@ -15,7 +15,7 @@ import { ThemeContext } from "../providers/ThemeProvider";
 import { InfoModalProps } from "../components/InfoModal";
 import { useToast } from "@chakra-ui/react";
 
-const suppliers_endpoint = "https://erp-isi-backend-3bfe7b8310b8.herokuapp.com/fornecedores";
+const suppliers_endpoint = "http://localhost:8080/fornecedores";
 
 const SuppliersPage: React.FC = () => {
   const { currentTheme } = useContext(ThemeContext);

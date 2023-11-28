@@ -30,7 +30,7 @@ const LoginPage = () => {
 
   async function onLoginSubmit(values: any, actions: any) {
     
-    const loginEndpoint = "https://erp-isi-backend-3bfe7b8310b8.herokuapp.com/usuarios/entrar"; 
+    const loginEndpoint = "http://localhost:8080/usuarios/entrar"; 
 
     var request = {
       user: values.email,

@@ -15,7 +15,7 @@ import { ThemeContext } from "../providers/ThemeProvider";
 import { InfoModalProps } from "../components/InfoModal";
 import { useToast } from "@chakra-ui/react";
 
-const products_endpoint = "https://erp-isi-backend-3bfe7b8310b8.herokuapp.com/produtos";
+const products_endpoint = "http://localhost:8080/produtos";
 
 const ProductsPage: React.FC = () => {
   const { currentTheme } = useContext(ThemeContext);
@@ -67,7 +67,7 @@ const ProductsPage: React.FC = () => {
   }
 
   async function getSuppliers() {
-    const workers_endpoint = "https://erp-isi-backend-3bfe7b8310b8.herokuapp.com/fornecedores";
+    const workers_endpoint = "http://localhost:8080/fornecedores";
     
     const res = await axios.get(workers_endpoint);
     setSuppliers(res.data);
