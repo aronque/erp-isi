@@ -29,7 +29,7 @@ public class PedidoFornecedorController {
 
     @PostMapping("/insert")
     public ResponseEntity createPedido(@RequestBody PedidoFornecedor pedido) {
-        if(!accControlService.temPersmissao(pedido.getId(), FUNC_CONST)) {
+        if(!accControlService.temPersmissao(pedido.getUsuario().getId(), FUNC_CONST)) {
             return ResponseEntity.ok("405");
         }
         Object[] objAux = new Object[7];
@@ -66,7 +66,7 @@ public class PedidoFornecedorController {
 
     @PutMapping("/update")
     public ResponseEntity updatePedido(@RequestBody PedidoFornecedor pedido) {
-        if(!accControlService.temPersmissao(pedido.getId(), FUNC_CONST)) {
+        if(!accControlService.temPersmissao(pedido.getUsuario().getId(), FUNC_CONST)) {
             return ResponseEntity.ok("405");
         }
         PedidoFornecedor pedidoAux;
@@ -83,7 +83,7 @@ public class PedidoFornecedorController {
 
     @DeleteMapping("/delete")
     public ResponseEntity delete(@RequestBody PedidoFornecedor pedido) {
-        if(!accControlService.temPersmissao(pedido.getId(), FUNC_CONST)) {
+        if(!accControlService.temPersmissao(pedido.getUsuario().getId(), FUNC_CONST)) {
             return ResponseEntity.ok("405");
         }
         Object[] objAux = new Object[7];
