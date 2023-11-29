@@ -2,6 +2,8 @@
 
 # Para poder rodar o sistema, siga os seguintes passos:
 
+##Clonar o repositório ou baixar o .zip por meio do botão <> Code - verde - acima deste README
+
 ## Backend:
 Seguir as instruções especificadas em [backend](./backend/README.md) 
 
