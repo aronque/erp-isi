@@ -41,7 +41,7 @@ Após isso feito, acessar a pasta backend com algum CLI (cmd ou git bash) e roda
 Caso mesmo seguindo os passos não seja possível rodar o backend, definir também, da mesma forma que no passo anterior, o caminho do maven mas agora na variável Path das **variáveis de usuário**, parte superior do menu de variáveis de ambiente, **logo acima das variáveis do sistema**.
 
 ## BD: 
-Para poder subir o backend também é necessário possuir o servidor do banco de dados rodando. Para isso, baixe o programa desktop do postgresql em [Postgresql](https://www.postgresql.org/) e instalá-lo. Durante a instalação, utilize a senha erpisi. Após concluir a instalação, abrir o pgAdmin e criar um novo servidor com os parâmetros:
+Para poder subir o backend também é necessário possuir o servidor do banco de dados rodando. Para isso, baixe o programa desktop do postgresql em [Postgresql](https://www.postgresql.org/) e instalá-lo. Durante a instalação, utilize sete a senha erpisi e mantenha a porta padrão do postgresql. Ao aparecer a tela de addons, expanda as opções e procure por Driver JDBC e ODBC 64bits e selecione ambos. Após concluir a instalação tanto da aplicação quanto dos drivers, abrir o pgAdmin e criar um novo servidor caso necessário (clicando com o botão direito em cima da aba servers create -> server) com os parâmetros :
 
 #### Host name/address: localhost
 
@@ -50,5 +50,7 @@ Para poder subir o backend também é necessário possuir o servidor do banco de
 #### Username: postgres
 
 #### Senha: erpisi
+
+Após criação do server, criar uma database (clicando com o botão direito em cima de databases -> create -> database) utilizando o nome db_projeto_isi e mantendo como owner o usuario postgres.
 
 Após finalizar a criação do servidor de BD, expandir o menu de Servers e em cima do item Schemas, clicar com botão direito e selecionar a opçao "Query Tool". Ao abrir a tela das querys, copiar todo [create.sql](src/main/resources/data.sql), selecionar o texto todo na tela de queries (CTRL + A) e selecionar o botão de rodar (ou F5 com o texto selecionado). Se não houver nenhum erro, o banco está criado e já é possível rodar o comando para subir o backend.

@@ -181,6 +181,7 @@ const OrdersPage: React.FC = () => {
       });
 
     } catch(err) {
+      console.log(err)
       toast({
         title: "Erro! Não foi possível excluir o pedido!",
         status: "error",
