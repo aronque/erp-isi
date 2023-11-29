@@ -9,6 +9,7 @@ import {
   Flex
 } from "@chakra-ui/react";
 import { Field, FieldArray, Form, Formik, useField } from "formik";
+import { Status } from "./utils/orderStatus";
 
 interface OrderFormProps {
   onSubmit: (values?: any) => void;
@@ -192,8 +193,28 @@ export const OrderForm: React.FC<OrderFormProps> = ({
   )}
 </FieldArray>
 
-          <Button type="submit">Enviar</Button>
+          <Field name="status" >
+            {({ field, form }) => (
+              <FormControl>
+                <FormLabel>Status</FormLabel>
+                <Select {...field} placeholder={is_editing ? "Selecione o Status do pedido" : "CRIADO"}>
+                  {
+                  Status.map((status: any) => {
+                    if(is_editing) {
+                      return (
+                        <option key={status.id} value={status.id}>
+                          {status.desc}
+                        </option>
+                      );
+                    }
+                  })}
+                </Select>
+              </FormControl>
+            )}
+          </Field>
 
+          <Button type="submit">Enviar</Button>
+                    
           {/* Restante do código... */}
         </Form>
       )}

@@ -321,7 +321,7 @@ const OrdersPage: React.FC = () => {
         });
       } catch(err) {
         toast({
-          title: "Erro! Não foi possível editar o cadastro do fornecedor!",
+          title: "Erro! Não foi possível editar o pedido!",
           status: "error",
           duration: 3000,
           isClosable: true,
