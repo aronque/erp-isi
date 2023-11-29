@@ -10,11 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
+/**
+ * Classe controladora de requests relacionados aos gráficos
+ */
 @RestController
 @RequestMapping("/graficos")
 public class GraficoController {
@@ -25,35 +24,43 @@ public class GraficoController {
 
     @PostMapping("/prodPedido")
     public ResponseEntity getRelatorioProdForn(@RequestBody Grafico grafico) throws IOException {
-        List<Map<String, Integer>> resultList = new ArrayList<>();
+        try {
+            Grafico response;
 
-        Grafico response;
+            grafico.setVwName("VW_PRODUTOS_PEDIDOS");
+            response = service.getData(grafico);
 
-        grafico.setVwName("VW_PRODUTOS_PEDIDOS");
-        response = service.getData(grafico);
-
-        return ResponseEntity.ok(response.getXy());
+            return ResponseEntity.ok(response.getXy());
+        } catch(Exception e) {
+            return ResponseEntity.ok("500");
+        }
     }
 
     @PostMapping("/movMes")
     public ResponseEntity getRelatorioMovMes(@RequestBody Grafico grafico) throws IOException {
+        try {
+            Grafico response;
 
-        Grafico response;
+            grafico.setVwName("VW_MOVIMENTACOES_MES");
+            response = service.getData(grafico);
 
-        grafico.setVwName("VW_MOVIMENTACOES_MES");
-        response = service.getData(grafico);
-
-        return ResponseEntity.ok(response.getXy());
+            return ResponseEntity.ok(response.getXy());
+        } catch(Exception e) {
+            return ResponseEntity.ok("500");
+        }
     }
 
     @PostMapping("/statusPedidos")
     public ResponseEntity getStatusPedidos(@RequestBody Grafico grafico) throws IOException {
+        try {
+            Grafico response;
 
-        Grafico response;
+            grafico.setVwName("VW_STATUS_PEDIDOS");
+            response = service.getData(grafico);
 
-        grafico.setVwName("VW_STATUS_PEDIDOS");
-        response = service.getData(grafico);
-
-        return ResponseEntity.ok(response.getXy());
+            return ResponseEntity.ok(response.getXy());
+        } catch(Exception e) {
+            return ResponseEntity.ok("500");
+        }
     }
 }

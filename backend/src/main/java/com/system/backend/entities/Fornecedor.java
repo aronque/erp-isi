@@ -6,6 +6,10 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Set;
 
+/**
+ * Entidade que representa um fornecedor mapeado no banco de dados.
+ * @author aronque
+ */
 @Entity
 @Table(name = "FORNECEDORES")
 public class Fornecedor implements Serializable {

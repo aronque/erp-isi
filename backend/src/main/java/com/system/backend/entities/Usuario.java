@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * Entidade que representa um usuário mapeado no banco de dados.
+ * @author aronque
+ */
 @Entity
 @Table(name = "USUARIOS")
 public class Usuario implements Serializable {

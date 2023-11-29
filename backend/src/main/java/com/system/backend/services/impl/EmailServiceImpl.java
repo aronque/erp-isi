@@ -5,6 +5,7 @@ import com.system.backend.entities.Relatorio;
 import com.system.backend.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -43,13 +44,18 @@ public class EmailServiceImpl implements EmailService {
     }
 
     public void sendEmail(MailInfos email) {
+
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setFrom("isimailsender@gmail.com");
         mail.setTo(email.getEmailTo());
         mail.setText(email.getMessage());
         mail.setSubject(email.getSubject());
 
-        sender.send(mail);
+        try{
+            sender.send(mail);
+        } catch (MailException ignored) {
+
+        }
     }
 
 }

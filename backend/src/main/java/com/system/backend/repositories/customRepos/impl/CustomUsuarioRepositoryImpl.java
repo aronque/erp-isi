@@ -5,15 +5,8 @@ import com.system.backend.repositories.customRepos.CustomUsuarioRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
-import org.postgresql.copy.CopyManager;
-import org.postgresql.core.BaseConnection;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.sql.*;
 import java.util.List;
-import java.util.ResourceBundle;
 
 @SuppressWarnings("ALL")
 public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
@@ -38,31 +31,6 @@ public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
         List<?> result = query.getResultList();
 
         return (List<Usuario>) result;
-    }
-
-
-    @Override
-    public Usuario login(String email, String senha) {
-        login = true;
-        Usuario usuarioAux = new Usuario();
-        StringBuilder sb = new StringBuilder(" FROM Usuario u WHERE ");
-        Query query;
-
-        usuarioAux.setEmail(email);
-        usuarioAux.setSenha(senha);
-
-        query = em.createQuery(setupQuery(usuarioAux, sb));
-        List<?> resultList = query.getResultList();
-
-        return (Usuario) (!resultList.isEmpty() ? resultList.get(0) : null);
-    }
-
-
-    @Override
-    public Long hasPermission(Long id) {
-
-
-        return null;
     }
 
 

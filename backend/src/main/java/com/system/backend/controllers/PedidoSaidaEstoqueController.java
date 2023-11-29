@@ -14,6 +14,9 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe controladora de requests relacionados a entidade pedidos de retirada de produtos (estoque)
+ */
 @RestController
 @RequestMapping("/pedidosEstoque")
 public class PedidoSaidaEstoqueController {
@@ -26,14 +29,18 @@ public class PedidoSaidaEstoqueController {
 
     @PostMapping("/insert")
     public ResponseEntity createPedido(@RequestBody PedidoSaidaEstoque pedido) {
-        Object[] objAux = new Object[7];
-        objAux[1] = pedido.getItems();
-        objAux[2] = Date.from(Instant.now());
-        objAux[3] = pedido.getStatus();
-        objAux[4] = pedido.getUsuario();
-        objAux[6] = PedidoSaidaEstoque.class;
-        crudService.create(objAux);
-        return ResponseEntity.ok().build();
+        try {
+            Object[] objAux = new Object[7];
+            objAux[1] = pedido.getItems();
+            objAux[2] = Date.from(Instant.now());
+            objAux[3] = pedido.getStatus();
+            objAux[4] = pedido.getUsuario();
+            objAux[6] = PedidoSaidaEstoque.class;
+            crudService.create(objAux);
+            return ResponseEntity.ok().build();
+        } catch(Exception e) {
+            return ResponseEntity.ok("500");
+        }
     }
 
     @GetMapping("")
@@ -58,30 +65,38 @@ public class PedidoSaidaEstoqueController {
 
     @PutMapping("/update")
     public ResponseEntity updatePedido(@RequestBody PedidoSaidaEstoque pedido) {
-        PedidoSaidaEstoque pedidoAux;
-        Object[] objAux = new Object[7];
-        objAux[0] = pedido.getId();
-        objAux[6] = PedidoSaidaEstoque.class;
+        try {
+            PedidoSaidaEstoque pedidoAux;
+            Object[] objAux = new Object[7];
+            objAux[0] = pedido.getId();
+            objAux[6] = PedidoSaidaEstoque.class;
 
-        pedidoAux = (PedidoSaidaEstoque) ((ArrayList<?>) crudService.filter(objAux)).get(0);
+            pedidoAux = (PedidoSaidaEstoque) ((ArrayList<?>) crudService.filter(objAux)).get(0);
 
-        setUpdatedFields(objAux, pedido, pedidoAux);
-        crudService.update(objAux);
+            setUpdatedFields(objAux, pedido, pedidoAux);
+            crudService.update(objAux);
 
-        return ResponseEntity.ok().build();
+            return ResponseEntity.ok().build();
+        } catch(Exception e) {
+            return ResponseEntity.ok("500");
+        }
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity delete(@RequestBody PedidoSaidaEstoque pedido) {
-        Object[] objAux = new Object[7];
-        objAux[0] = pedido.getId();
-        objAux[1] = pedido.getItems();
-        objAux[2] = pedido.getData();
-        objAux[3] = pedido.getStatus();
-        objAux[4] = pedido.getUsuario();
-        objAux[6] = PedidoSaidaEstoque.class;
-        crudService.delete(objAux);
-        return ResponseEntity.ok().build();
+        try {
+            Object[] objAux = new Object[7];
+            objAux[0] = pedido.getId();
+            objAux[1] = pedido.getItems();
+            objAux[2] = pedido.getData();
+            objAux[3] = pedido.getStatus();
+            objAux[4] = pedido.getUsuario();
+            objAux[6] = PedidoSaidaEstoque.class;
+            crudService.delete(objAux);
+            return ResponseEntity.ok().build();
+        } catch(Exception e) {
+            return ResponseEntity.ok("500");
+        }
     }
 
     private void setUpdatedFields(Object[] objAux, PedidoSaidaEstoque pedidoParam, PedidoSaidaEstoque pedidoAux) {

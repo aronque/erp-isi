@@ -3,7 +3,7 @@ package com.system.backend.services.impl;
 import com.system.backend.entities.RelatorioProdEstoque;
 import com.system.backend.repositories.customRepos.CustomRelatorioRepository;
 import com.system.backend.services.RelatorioService;
-import com.system.backend.util.CSVReader;
+import com.system.backend.util.Reader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +26,7 @@ public class RelatorioProdEstoqueServiceImpl implements RelatorioService {
         List<String> rows = null;
 
         try {
-            rows = CSVReader.read(path);
+            rows = Reader.read(path);
         } catch(Exception e) {
 
         }

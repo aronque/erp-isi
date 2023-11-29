@@ -14,6 +14,9 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe controladora de requests relacionados a entidade pedidos de entrada de produtos (fornecedor)
+ */
 @RestController
 @RequestMapping("/pedidosFornecedor")
 public class PedidoFornecedorController {
@@ -29,18 +32,22 @@ public class PedidoFornecedorController {
 
     @PostMapping("/insert")
     public ResponseEntity createPedido(@RequestBody PedidoFornecedor pedido) {
-        if(!accControlService.temPersmissao(pedido.getUsuario().getId(), FUNC_CONST)) {
-            return ResponseEntity.ok("405");
+        try {
+            if(!accControlService.temPersmissao(pedido.getUsuario().getId(), FUNC_CONST)) {
+                return ResponseEntity.ok("405");
+            }
+            Object[] objAux = new Object[7];
+            objAux[1] = pedido.getItems();
+            objAux[2] = Date.from(Instant.now());
+            objAux[3] = pedido.getStatus();
+            objAux[4] = pedido.getUsuario();
+            objAux[5] = pedido.getFornecedor();
+            objAux[6] = PedidoFornecedor.class;
+            crudService.create(objAux);
+            return ResponseEntity.ok().build();
+        } catch(Exception e) {
+            return ResponseEntity.ok("500");
         }
-        Object[] objAux = new Object[7];
-        objAux[1] = pedido.getItems();
-        objAux[2] = Date.from(Instant.now());
-        objAux[3] = pedido.getStatus();
-        objAux[4] = pedido.getUsuario();
-        objAux[5] = pedido.getFornecedor();
-        objAux[6] = PedidoFornecedor.class;
-        crudService.create(objAux);
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping("")
@@ -52,50 +59,63 @@ public class PedidoFornecedorController {
     }
 
     @PostMapping("/findByCriteria")
-    public ResponseEntity<List<Pedido>> findByCriteria(@RequestBody PedidoFornecedor pedido) {
-        Object[] objAux = new Object[7];
-        objAux[0] = pedido.getId();
-        objAux[1] = pedido.getItems();
-        objAux[2] = pedido.getData();
-        objAux[3] = pedido.getStatus();
-        objAux[4] = pedido.getUsuario();
-        objAux[5] = pedido.getFornecedor();
-        objAux[6] = PedidoFornecedor.class;
-        return ResponseEntity.ok((List<Pedido>) crudService.filter(objAux));
+    public ResponseEntity<List<?>> findByCriteria(@RequestBody PedidoFornecedor pedido) {
+        try {
+            Object[] objAux = new Object[7];
+            objAux[0] = pedido.getId();
+            objAux[1] = pedido.getItems();
+            objAux[2] = pedido.getData();
+            objAux[3] = pedido.getStatus();
+            objAux[4] = pedido.getUsuario();
+            objAux[5] = pedido.getFornecedor();
+            objAux[6] = PedidoFornecedor.class;
+            return ResponseEntity.ok((List<Pedido>) crudService.filter(objAux));
+        } catch(Exception e) {
+            return ResponseEntity.ok(List.of("500"));
+        }
     }
 
     @PutMapping("/update")
     public ResponseEntity updatePedido(@RequestBody PedidoFornecedor pedido) {
-        if(!accControlService.temPersmissao(pedido.getUsuario().getId(), FUNC_CONST)) {
-            return ResponseEntity.ok("405");
+        try {
+            if(!accControlService.temPersmissao(pedido.getUsuario().getId(), FUNC_CONST)) {
+                return ResponseEntity.ok("405");
+            }
+            PedidoFornecedor pedidoAux;
+            Object[] objAux = new Object[7];
+            objAux[0] = pedido.getId();
+
+            pedidoAux = (PedidoFornecedor) ((ArrayList) crudService.filter(objAux)).get(0);
+
+            setUpdatedFields(objAux, pedido, pedidoAux);
+            crudService.update(objAux);
+
+            return ResponseEntity.ok().build();
+        } catch(Exception e) {
+            return ResponseEntity.ok("500");
         }
-        PedidoFornecedor pedidoAux;
-        Object[] objAux = new Object[7];
-        objAux[0] = pedido.getId();
 
-        pedidoAux = (PedidoFornecedor) ((ArrayList) crudService.filter(objAux)).get(0);
-
-        setUpdatedFields(objAux, pedido, pedidoAux);
-        crudService.update(objAux);
-
-        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity delete(@RequestBody PedidoFornecedor pedido) {
-        if(!accControlService.temPersmissao(pedido.getUsuario().getId(), FUNC_CONST)) {
-            return ResponseEntity.ok("405");
+        try {
+            if(!accControlService.temPersmissao(pedido.getUsuario().getId(), FUNC_CONST)) {
+                return ResponseEntity.ok("405");
+            }
+            Object[] objAux = new Object[7];
+            objAux[0] = pedido.getId();
+            objAux[1] = pedido.getItems();
+            objAux[2] = pedido.getData();
+            objAux[3] = pedido.getStatus();
+            objAux[4] = pedido.getUsuario();
+            objAux[5] = pedido.getFornecedor();
+            objAux[6] = PedidoFornecedor.class;
+            crudService.delete(objAux);
+            return ResponseEntity.ok().build();
+        } catch(Exception e) {
+            return ResponseEntity.ok("500");
         }
-        Object[] objAux = new Object[7];
-        objAux[0] = pedido.getId();
-        objAux[1] = pedido.getItems();
-        objAux[2] = pedido.getData();
-        objAux[3] = pedido.getStatus();
-        objAux[4] = pedido.getUsuario();
-        objAux[5] = pedido.getFornecedor();
-        objAux[6] = PedidoFornecedor.class;
-        crudService.delete(objAux);
-        return ResponseEntity.ok().build();
     }
 
     private void setUpdatedFields(Object[] objAux, PedidoFornecedor pedidoParam, PedidoFornecedor pedidoAux) {

@@ -5,6 +5,10 @@ import jakarta.persistence.Entity;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * Entidade que representa um pedido de entrada de produtos mapeado no banco de dados.
+ * @author aronque
+ */
 @Entity
 public class PedidoFornecedor extends Pedido implements Serializable {
 

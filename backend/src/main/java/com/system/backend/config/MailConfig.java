@@ -7,6 +7,9 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+/**
+ * Classe de configuração para conexão do serviço de email da aplicação com o servidor smtp google
+ */
 @Configuration
 public class MailConfig {
 

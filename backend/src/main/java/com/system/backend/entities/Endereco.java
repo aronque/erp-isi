@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * Entidade que representa um endereço mapeado no banco de dados.
+ * @author aronque
+ */
 @Entity
 @Table(name = "ENDERECOS")
 public class Endereco implements Serializable {

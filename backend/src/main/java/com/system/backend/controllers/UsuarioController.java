@@ -1,12 +1,10 @@
 package com.system.backend.controllers;
 
-import com.system.backend.entities.LoginAux;
 import com.system.backend.entities.MailInfos;
 import com.system.backend.entities.Usuario;
 import com.system.backend.services.CRUDService;
 import com.system.backend.services.ControleAcessoService;
 import com.system.backend.services.EmailService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe controladora de requests relacionados a entidade usuários
+ */
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
@@ -34,23 +35,27 @@ public class UsuarioController {
 
     @PostMapping("/insert")
     public ResponseEntity createUsuario(@RequestBody Usuario usuario) {
-        if(!accControlService.temPersmissao(usuario.getRequestUser().getId(), FUNC_CONST)) {
-            return ResponseEntity.ok("405");
+        try {
+            if(!accControlService.temPersmissao(usuario.getRequestUser().getId(), FUNC_CONST)) {
+                return ResponseEntity.ok("405");
+            }
+            Object[] objAux = new Object[5];
+            objAux[1] = usuario.getNome();
+            objAux[2] = usuario.getEmail();
+            objAux[3] = usuario.getSenha();
+            objAux[4] = usuario.getTipo();
+            Usuario criado = (Usuario) crudService.create(objAux);
+
+            MailInfos infos = new MailInfos();
+            infos.setEmailTo(criado.getEmail());
+            infos.setMessage("Um usuário foi criado com sucesso para este email! Segue os dados para utilização no sistema: \nUser: " + criado.getEmail() + "\nSenha:" + criado.getSenha() + "\n\nCaso não tenha sido você que criou este usuário, entre em contato respondendo este email.");
+            infos.setSubject("Confirmação - Criação de Usuário");
+            emailService.sendEmail(infos);
+
+            return ResponseEntity.ok().build();
+        } catch(Exception e) {
+            return ResponseEntity.ok("500");
         }
-        Object[] objAux = new Object[5];
-        objAux[1] = usuario.getNome();
-        objAux[2] = usuario.getEmail();
-        objAux[3] = usuario.getSenha();
-        objAux[4] = usuario.getTipo();
-        Usuario criado = (Usuario) crudService.create(objAux);
-
-        MailInfos infos = new MailInfos();
-        infos.setEmailTo(criado.getEmail());
-        infos.setMessage("Um usuário foi criado com sucesso para este email! Segue os dados para utilização no sistema: \nUser: " + criado.getEmail() + "\nSenha:" + criado.getSenha() + "\n\nCaso não tenha sido você que criou este usuário, entre em contato respondendo este email.");
-        infos.setSubject("Confirmação - Criação de Usuário");
-        emailService.sendEmail(infos);
-
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping("")
@@ -70,45 +75,42 @@ public class UsuarioController {
 
     @PutMapping("/update")
     public ResponseEntity updateUsuario(@RequestBody Usuario usuario) {
-        if(!accControlService.temPersmissao(usuario.getRequestUser().getId(), FUNC_CONST)) {
-            return ResponseEntity.ok("405");
+        try {
+            if(!accControlService.temPersmissao(usuario.getRequestUser().getId(), FUNC_CONST)) {
+                return ResponseEntity.ok("405");
+            }
+            Usuario usuarioAux;
+            Object[] objAux = new Object[5];
+            objAux[0] = usuario.getId();
+
+            usuarioAux = (Usuario) ((ArrayList<?>) crudService.filter(objAux)).get(0);
+
+            setUpdatedFields(objAux, usuario, usuarioAux);
+            crudService.update(objAux);
+
+            return ResponseEntity.ok().build();
+        } catch(Exception e) {
+            return ResponseEntity.ok("500");
         }
-        Usuario usuarioAux;
-        Object[] objAux = new Object[5];
-        objAux[0] = usuario.getId();
-
-        usuarioAux = (Usuario) ((ArrayList<?>) crudService.filter(objAux)).get(0);
-
-        setUpdatedFields(objAux, usuario, usuarioAux);
-        crudService.update(objAux);
-
-        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity delete(@RequestBody Usuario usuario) {
-        if(!accControlService.temPersmissao(usuario.getRequestUser().getId(), FUNC_CONST)) {
-            return ResponseEntity.ok("405");
+        try {
+            if(!accControlService.temPersmissao(usuario.getRequestUser().getId(), FUNC_CONST)) {
+                return ResponseEntity.ok("405");
+            }
+            Object[] objAux = new Object[5];
+            objAux[0] = usuario.getId();
+            objAux[1] = usuario.getNome();
+            objAux[2] = usuario.getEmail();
+            objAux[3] = usuario.getSenha();
+            objAux[4] = usuario.getTipo();
+            crudService.delete(objAux);
+            return ResponseEntity.ok().build();
+        } catch(Exception e) {
+            return ResponseEntity.ok("500");
         }
-        Object[] objAux = new Object[5];
-        objAux[0] = usuario.getId();
-        objAux[1] = usuario.getNome();
-        objAux[2] = usuario.getEmail();
-        objAux[3] = usuario.getSenha();
-        objAux[4] = usuario.getTipo();
-        crudService.delete(objAux);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/entrar")
-    public ResponseEntity login(@RequestBody LoginAux infos, HttpSession session) {
-        Usuario usuarioLogado = crudService.login(infos.getUser(), infos.getSenha());
-        if(usuarioLogado != null) {
-            session.setAttribute("userSession", usuarioLogado);
-            return ResponseEntity.ok(usuarioLogado);
-        }
-
-        return ResponseEntity.notFound().build();
     }
 
     private void setUpdatedFields(Object[] objAux, Usuario usuarioParam, Usuario usuarioAux) {

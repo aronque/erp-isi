@@ -9,6 +9,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Classe de configuração para permitir diversos tipos de headers HTTP e facilitar a utilização das APIs
+ */
 @Configuration
 public class CORSConfiguration extends OncePerRequestFilter {
 

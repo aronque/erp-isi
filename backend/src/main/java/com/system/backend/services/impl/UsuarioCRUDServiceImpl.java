@@ -70,9 +70,4 @@ public class UsuarioCRUDServiceImpl implements CRUDService {
         return null;
     }
 
-    @Override
-    public Usuario login(String user, String senha) throws ServiceException {
-        return repository.login(user, senha);
-    }
-
 }

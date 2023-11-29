@@ -8,6 +8,10 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * Entidade que representa um pedido genérico mapeado no banco de dados.
+ * @author aronque
+ */
 @Entity
 @Table(name = "PEDIDOS")
 public abstract class Pedido implements Serializable {

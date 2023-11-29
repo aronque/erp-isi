@@ -7,6 +7,10 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * Entidade que representa um item de um pedido mapeado no banco de dados.
+ * @author aronque
+ */
 @Entity
 @Table(name = "ITEM_PEDIDO")
 public class ItemPedido implements Serializable {

@@ -6,6 +6,10 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * Entidade que representa um produto mapeado no banco de dados.
+ * @author aronque
+ */
 @Entity
 @Table(name = "PRODUTOS")
 public class Produto implements Serializable {
