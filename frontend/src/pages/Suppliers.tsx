@@ -91,9 +91,17 @@ const SuppliersPage: React.FC = () => {
             isClosable: true,
             position: "top",
           });
+        } else if(res.data == 500) {
+          toast({
+            title: "Erro! Não foi possível excluir o fornecedor!",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
         } else {
           toast({
-            title: "Operação realizada com sucesso. O relatório será enviado para o email inserido",
+            title: "Operação realizada com sucesso.",
             status: "success",
             duration: 3000,
             isClosable: true,
@@ -181,9 +189,17 @@ const SuppliersPage: React.FC = () => {
               isClosable: true,
               position: "top",
             });
+          } else if(res.data == 500) {
+            toast({
+              title: "Erro! Não foi possível modificar o fornecedor!",
+              status: "error",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+            });
           } else {
             toast({
-              title: "Operação realizada com sucesso. O relatório será enviado para o email inserido",
+              title: "Operação realizada com sucesso.",
               status: "success",
               duration: 3000,
               isClosable: true,
@@ -231,9 +247,17 @@ const SuppliersPage: React.FC = () => {
               isClosable: true,
               position: "top",
             });
+          } else if(res.data == 500) {
+            toast({
+              title: "Erro! Não foi possível inserir o fornecedor!",
+              status: "error",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+            });
           } else {
             toast({
-              title: "Operação realizada com sucesso. O relatório será enviado para o email inserido",
+              title: "Operação realizada com sucesso.",
               status: "success",
               duration: 3000,
               isClosable: true,

@@ -57,9 +57,17 @@ const ReportPage = () => {
             isClosable: true,
             position: "top",
           });
+        } else if(res.data == 500) {
+          toast({
+            title: "Erro! Não foi possível gerar o relatório!",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
         } else {
           toast({
-            title: "Operação realizada com sucesso. O relatório será enviado para o email inserido",
+            title: "Operação realizada com sucesso. O relatório será enviado para o email fornecido.",
             status: "success",
             duration: 3000,
             isClosable: true,

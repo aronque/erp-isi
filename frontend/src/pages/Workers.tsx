@@ -73,13 +73,6 @@ const WorkersPage: React.FC = () => {
   const deleteWorker = (worker) => {
     console.log("deleteWorker", worker);
 
-    var request = {
-      id: worker.id,
-      requestUser: {
-        id: user['id']
-      }
-    }
-
     try {
       axios.delete(users_endpoint + "/delete", {
         data: {
@@ -97,9 +90,17 @@ const WorkersPage: React.FC = () => {
             isClosable: true,
             position: "top",
           });
+        } else if(res.data == 500) {
+          toast({
+            title: "Erro! Não foi possível deletar o usuário!",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
         } else {
           toast({
-            title: "Operação realizada com sucesso",
+            title: "Operação realizada com sucesso.",
             status: "success",
             duration: 3000,
             isClosable: true,
@@ -163,9 +164,17 @@ const WorkersPage: React.FC = () => {
               isClosable: true,
               position: "top",
             });
+          } else if(res.data == 500) {
+            toast({
+              title: "Erro! Não foi possível modificar o usuário!",
+              status: "error",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+            });
           } else {
             toast({
-              title: "Operação realizada com sucesso",
+              title: "Operação realizada com sucesso.",
               status: "success",
               duration: 3000,
               isClosable: true,
@@ -205,9 +214,17 @@ const WorkersPage: React.FC = () => {
               isClosable: true,
               position: "top",
             });
+          } else if(res.data == 500) {
+            toast({
+              title: "Erro! Não foi possível inserir o usuário!",
+              status: "error",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+            });
           } else {
             toast({
-              title: "Operação realizada com sucesso",
+              title: "Operação realizada com sucesso.",
               status: "success",
               duration: 3000,
               isClosable: true,

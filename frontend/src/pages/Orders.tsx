@@ -169,9 +169,17 @@ const OrdersPage: React.FC = () => {
             isClosable: true,
             position: "top",
           });
+        } else if(res.data == 500) {
+          toast({
+            title: "Erro! Não foi possível deletar o pedido!",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
         } else {
           toast({
-            title: "Operação realizada com sucesso",
+            title: "Operação realizada com sucesso.",
             status: "success",
             duration: 3000,
             isClosable: true,
@@ -228,9 +236,17 @@ const OrdersPage: React.FC = () => {
         } else {
           const productsMap = values["items"].map((item, index) => {
             if(index < values["items"].length - 1) {
-              return item["produto"]["nome"] + ": "+ item["quantidade"] +  " | "
+              if(item["produto"] != null) {
+                return item["produto"]["nome"] + ": "+ item["quantidade"] +  " | "
+              } else {
+                return "Produto excluído" + " | "
+              }
             } else {
-              return item["produto"]["nome"] + ": "+ item["quantidade"]
+              if(item["produto"] != null) {
+                return item["produto"]["nome"] + ": "+ item["quantidade"]
+              } else {
+                return "Produto excluído"
+              }
             }
           })
           data.push({
@@ -285,9 +301,17 @@ const OrdersPage: React.FC = () => {
               isClosable: true,
               position: "top",
             });
+          } else if(res.data == 500) {
+            toast({
+              title: "Erro! Não foi possível modificar o pedido!",
+              status: "error",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+            });
           } else {
             toast({
-              title: "Operação realizada com sucesso",
+              title: "Operação realizada com sucesso.",
               status: "success",
               duration: 3000,
               isClosable: true,
@@ -346,9 +370,17 @@ const OrdersPage: React.FC = () => {
                 isClosable: true,
                 position: "top",
               });
+            } else if(res.data == 500) {
+              toast({
+                title: "Erro! Não foi possível inserir o pedido!",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+                position: "top",
+              });
             } else {
               toast({
-                title: "Operação realizada com sucesso",
+                title: "Operação realizada com sucesso.",
                 status: "success",
                 duration: 3000,
                 isClosable: true,
@@ -396,9 +428,17 @@ const OrdersPage: React.FC = () => {
                 isClosable: true,
                 position: "top",
               });
+            } else if(res.data == 500) {
+              toast({
+                title: "Erro! Não foi possível inserir o pedido!",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+                position: "top",
+              });
             } else {
               toast({
-                title: "Operação realizada com sucesso",
+                title: "Operação realizada com sucesso.",
                 status: "success",
                 duration: 3000,
                 isClosable: true,

@@ -152,24 +152,6 @@ const HomePage: React.FC = () => {
         <Card>
           <CardBody>
             <Text fontSize={{ base: "2xl", md: "3xl" }}>
-              Movimentações por Mês
-            </Text>
-            <VictoryChart>
-              <VictoryLine
-                style={{
-                  data: { stroke: "#c43a31" },
-                  parent: { border: "1px solid #ccc" },
-                }}
-                data={movMes}
-                x="mes"
-                y="quantidade"
-              />
-            </VictoryChart>
-          </CardBody>
-        </Card>
-        <Card>
-          <CardBody>
-            <Text fontSize={{ base: "2xl", md: "3xl" }}>
               Fornecedor - Produto
             </Text>
             <VictoryChart domainPadding={20}>

@@ -19,6 +19,8 @@ import {
 import { SidebarHeader } from "./SidebarHeader";
 import { MenuLink } from "./SidebarComponents";
 import { useLocation } from "react-router-dom";
+import { AtSignIcon } from "@chakra-ui/icons";
+import { GenericAvatarIcon } from "@chakra-ui/react";
 
 const themes = {
   light: {
@@ -187,6 +189,9 @@ export const MainSidebar: React.FC = () => {
                 <MenuItem onClick={() => setTheme("dark")}> Escuro</MenuItem>
                 <MenuItem onClick={() => setTheme("light")}> Claro</MenuItem>
               </SubMenu>
+              <MenuLink to="">
+                <MenuItem icon={<GenericAvatarIcon/>}>Logout</MenuItem>
+              </MenuLink>
             </Menu>
           </div>
         </div>
