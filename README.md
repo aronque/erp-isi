@@ -1,3 +1,5 @@
+# Bem vindo!
+
 # Para poder rodar o sistema, siga os seguintes passos:
 
 ## Backend:
@@ -14,3 +16,17 @@ Após a inicialização da aplicação, entre no sistema utilizando o usuário d
 ### Usuario ESTOQUE: acesso total MENOS criação de usuários
 
 ### Usuário COMUM: somente consulta de dados e criação de pedidos de retirada do estoque.
+
+## Usuários para acessar a aplicação
+
+### Comum: 
+  email: joao.silva@gmail.com
+  senha: joao123
+
+### ADM:
+  email: adm@gmail.com
+  senha: admisierp
+
+### Estoque
+  email: alberto@empresa.com
+  senha: alberto123
