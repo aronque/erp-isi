@@ -19,7 +19,7 @@ import getSession from "../components/getSession";
 const suppliers_endpoint = "http://localhost:8080/fornecedores";
 
 const SuppliersPage: React.FC = () => {
-  const user = getSession();
+  const user = JSON.parse(getSession());
   const { currentTheme } = useContext(ThemeContext);
   const toast = useToast();
   const [headers, setHeaders] = useState([
@@ -236,7 +236,7 @@ const SuppliersPage: React.FC = () => {
         }
       }
       const insertSupplier = suppliers_endpoint + "/insert";
-      
+
       try {
         axios.post(insertSupplier, request).then(res => {
           if(res.data == 405) {
