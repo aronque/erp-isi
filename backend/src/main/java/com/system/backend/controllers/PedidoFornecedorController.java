@@ -13,6 +13,7 @@ import java.sql.Date;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Classe controladora de requests relacionados a entidade pedidos de entrada de produtos (fornecedor)
@@ -61,15 +62,7 @@ public class PedidoFornecedorController {
     @PostMapping("/findByCriteria")
     public ResponseEntity<List<?>> findByCriteria(@RequestBody PedidoFornecedor pedido) {
         try {
-            Object[] objAux = new Object[7];
-            objAux[0] = pedido.getId();
-            objAux[1] = pedido.getItems();
-            objAux[2] = pedido.getData();
-            objAux[3] = pedido.getStatus();
-            objAux[4] = pedido.getUsuario();
-            objAux[5] = pedido.getFornecedor();
-            objAux[6] = PedidoFornecedor.class;
-            return ResponseEntity.ok((List<Pedido>) crudService.filter(objAux));
+            return ResponseEntity.ok(crudService.filter(pedido).stream().map(filtered -> (PedidoFornecedor) filtered).collect(Collectors.toList()));
         } catch(Exception e) {
             return ResponseEntity.ok(List.of("500"));
         }

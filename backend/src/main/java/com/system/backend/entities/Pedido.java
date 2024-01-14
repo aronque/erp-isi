@@ -14,14 +14,10 @@ import java.util.*;
  */
 @Entity
 @Table(name = "PEDIDOS")
-public abstract class Pedido implements Serializable {
+public abstract class Pedido extends EntidadeBase implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "pedido", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ItemPedido> itens = new ArrayList<>();
@@ -46,16 +42,6 @@ public abstract class Pedido implements Serializable {
     private String instancia;
 
     public Pedido() {
-    }
-
-
-    public Long getId() {
-        return id;
-    }
-
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
 

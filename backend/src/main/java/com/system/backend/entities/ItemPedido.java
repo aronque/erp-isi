@@ -13,14 +13,10 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "ITEM_PEDIDO")
-public class ItemPedido implements Serializable {
+public class ItemPedido extends EntidadeBase implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @ManyToOne
     private Pedido pedido;
@@ -34,16 +30,6 @@ public class ItemPedido implements Serializable {
 
 
     public ItemPedido(){
-    }
-
-
-    public Long getId() {
-        return id;
-    }
-
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
 

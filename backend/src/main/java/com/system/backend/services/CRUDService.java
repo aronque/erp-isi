@@ -1,6 +1,9 @@
 package com.system.backend.services;
 
+import com.system.backend.entities.EntidadeBase;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Classe genérica de serviços relacionados as entidades principais do sistema
@@ -13,50 +16,50 @@ public interface CRUDService {
     /**
      * Cria uma nova tupla com as informações do objeto fornecido
      * @author aronque
-     * @param obj Array de Objetos genéricos contendo os dados da entidade
-     * @return Object retorna as informações da criação da entidade
+     * @param entity Entidade genérica contendo os dados da entidade
+     * @return EntidadeBase retorna as informações da criação da entidade
      */
-    public Object create(Object[] obj);
+    public EntidadeBase create(EntidadeBase entity);
 
 
     /**
      * Delete uma tupla com base nas informações do objeto fornecido
      * @author aronque
-     * @param obj Array de Objetos genéricos contendo os dados da entidade
+     * @param entity Array de Objetos genéricos contendo os dados da entidade
      */
-    public void delete(Object[] obj);
+    public void delete(EntidadeBase entity);
 
 
     /**
      * Modifica uma tupla com base nas informações do objeto fornecido
      * @author aronque
-     * @param obj Array de Objetos genéricos contendo os dados da entidade
+     * @param entity Array de Objetos genéricos contendo os dados da entidade
      */
-    public void update(Object[] obj);
+    public void update(EntidadeBase entity);
 
 
     /**
      * Filtra uma tupla com base nas informações do objeto fornecido
      * @author aronque
-     * @param obj Array de Objetos genéricos contendo os dados da entidade
-     * @return Object retorna as informações do objeto filtrado
+     * @param entity Array de Objetos genéricos contendo os dados da entidade
+     * @return EntidadeBase retorna as informações do objeto filtrado
      */
-    public Object filter(Object[] obj);
+    public List<EntidadeBase> filter(EntidadeBase entity);
 
 
     /**
      * Filtra todas as entidades do tipo fornecido
      * @author aronque
-     * @return Object retorna os dados dos objetos encontrados
+     * @return EntidadeBase retorna os dados dos objetos encontrados
      */
-    public Object filterAll();
+    public List<EntidadeBase> filterAll();
 
 
     /**
      * Filtra todas as entidades do tipo fornecido
      * @author aronque
-     * @return Object retorna os dados dos objetos encontrados
+     * @return EntidadeBase retorna os dados dos objetos encontrados
      */
-    public Object filterAll(Object[] obj);
+    public List<EntidadeBase> filterAll(EntidadeBase entity);
 
 }

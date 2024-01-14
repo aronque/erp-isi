@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Classe controladora de requests relacionados a entidade usuários
@@ -39,12 +40,8 @@ public class UsuarioController {
             if(!accControlService.temPersmissao(usuario.getRequestUser().getId(), FUNC_CONST)) {
                 return ResponseEntity.ok("405");
             }
-            Object[] objAux = new Object[5];
-            objAux[1] = usuario.getNome();
-            objAux[2] = usuario.getEmail();
-            objAux[3] = usuario.getSenha();
-            objAux[4] = usuario.getTipo();
-            Usuario criado = (Usuario) crudService.create(objAux);
+
+            Usuario criado = (Usuario) crudService.create(usuario);
 
             MailInfos infos = new MailInfos();
             infos.setEmailTo(criado.getEmail());
@@ -60,17 +57,12 @@ public class UsuarioController {
 
     @GetMapping("")
     public ResponseEntity<List<Usuario>> findAll() {
-        return ResponseEntity.ok((List<Usuario>) crudService.filterAll());
+        return ResponseEntity.ok(crudService.filterAll().stream().map(filtered -> (Usuario) filtered).collect(Collectors.toList()));
     }
 
     @PostMapping("/findByCriteria")
     public ResponseEntity<List<Usuario>> findByCriteria(@RequestBody Usuario usuario) {
-        Object[] objAux = new Object[5];
-        objAux[0] = usuario.getId();
-        objAux[1] = usuario.getNome();
-        objAux[2] = usuario.getEmail();
-        objAux[4] = usuario.getTipo();
-        return ResponseEntity.ok((List<Usuario>) crudService.filter(objAux));
+        return ResponseEntity.ok(crudService.filter(usuario).stream().map(filtered -> (Usuario) filtered).collect(Collectors.toList()));
     }
 
     @PutMapping("/update")
@@ -79,14 +71,12 @@ public class UsuarioController {
             if(!accControlService.temPersmissao(usuario.getRequestUser().getId(), FUNC_CONST)) {
                 return ResponseEntity.ok("405");
             }
-            Usuario usuarioAux;
-            Object[] objAux = new Object[5];
-            objAux[0] = usuario.getId();
+            Usuario usuarioAux = new Usuario();
+            usuarioAux.setId(usuario.getId());
+            usuarioAux = (Usuario) ((ArrayList<?>) crudService.filter(usuarioAux)).get(0);
 
-            usuarioAux = (Usuario) ((ArrayList<?>) crudService.filter(objAux)).get(0);
-
-            setUpdatedFields(objAux, usuario, usuarioAux);
-            crudService.update(objAux);
+            setUpdatedFields(usuario, usuarioAux);
+            crudService.update(usuarioAux);
 
             return ResponseEntity.ok().build();
         } catch(Exception e) {
@@ -100,23 +90,17 @@ public class UsuarioController {
             if(!accControlService.temPersmissao(usuario.getRequestUser().getId(), FUNC_CONST)) {
                 return ResponseEntity.ok("405");
             }
-            Object[] objAux = new Object[5];
-            objAux[0] = usuario.getId();
-            objAux[1] = usuario.getNome();
-            objAux[2] = usuario.getEmail();
-            objAux[3] = usuario.getSenha();
-            objAux[4] = usuario.getTipo();
-            crudService.delete(objAux);
+            crudService.delete(usuario);
             return ResponseEntity.ok().build();
         } catch(Exception e) {
             return ResponseEntity.ok("500");
         }
     }
 
-    private void setUpdatedFields(Object[] objAux, Usuario usuarioParam, Usuario usuarioAux) {
-        objAux[1] = usuarioParam.getNome() != null ? usuarioParam.getNome() : usuarioAux.getNome();
-        objAux[2] = usuarioParam.getEmail() != null ? usuarioParam.getEmail() : usuarioAux.getEmail();
-        objAux[3] = usuarioParam.getSenha() != null ? usuarioParam.getSenha() : usuarioAux.getSenha();
-        objAux[4] = usuarioParam.getTipo() != null ? usuarioParam.getTipo() : usuarioAux.getTipo();
+    private void setUpdatedFields(Usuario usuarioParam, Usuario usuarioAux) {
+        usuarioAux.setNome(usuarioParam.getNome() != null ? usuarioParam.getNome() : usuarioAux.getNome());
+        usuarioAux.setEmail(usuarioParam.getEmail() != null ? usuarioParam.getEmail() : usuarioAux.getEmail());
+        usuarioAux.setSenha(usuarioParam.getSenha() != null ? usuarioParam.getSenha() : usuarioAux.getSenha());
+        usuarioAux.setTipo(usuarioParam.getTipo() != null ? usuarioParam.getTipo() : usuarioAux.getTipo());
     }
 }

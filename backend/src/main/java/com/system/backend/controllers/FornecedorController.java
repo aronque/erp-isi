@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Classe controladora de requests relacionados a entidade fornecedores
@@ -37,14 +38,8 @@ public class FornecedorController {
             if(!accControlService.temPersmissao(fornecedor.getRequestUser().getId(), FUNC_CONST)) {
                 return ResponseEntity.ok("405");
             }
-            Object[] objAux = new Object[5];
-            objAux[0] = fornecedor.getId();
-            objAux[1] = fornecedor.getNome();
-            objAux[2] = fornecedor.getCnpj();
-            objAux[3] = fornecedor.getContato();
-            objAux[4] = fornecedor.getEndereco();
 
-            crudService.create(objAux);
+            crudService.create(fornecedor);
 
             return ResponseEntity.ok().build();
         } catch(Exception e) {
@@ -54,20 +49,13 @@ public class FornecedorController {
 
     @GetMapping("")
     public ResponseEntity<List<Fornecedor>> findAll() {
-        List<Fornecedor> list = (List<Fornecedor>) crudService.filterAll();
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(crudService.filterAll().stream().map(filtered -> (Fornecedor) filtered).collect(Collectors.toList()));
     }
 
     @PostMapping("/findByCriteria")
     public ResponseEntity<List<?>> findByCriteria(@RequestBody Fornecedor fornecedor) {
         try {
-            Object[] objAux = new Object[5];
-            objAux[0] = fornecedor.getId();
-            objAux[1] = fornecedor.getNome();
-            objAux[2] = fornecedor.getCnpj();
-            objAux[3] = fornecedor.getContato();
-            objAux[4] = fornecedor.getEndereco();
-            return ResponseEntity.ok((List<Fornecedor>) crudService.filter(objAux));
+            return ResponseEntity.ok(crudService.filter(fornecedor).stream().map(filtered -> (Fornecedor) filtered).collect(Collectors.toList()));
         } catch(Exception e) {
             return ResponseEntity.ok(List.of("500"));
         }
@@ -79,14 +67,12 @@ public class FornecedorController {
             if(!accControlService.temPersmissao(fornecedor.getRequestUser().getId(), FUNC_CONST)) {
                 return ResponseEntity.ok("405");
             }
-            Fornecedor fornecedorAux;
-            Object[] objAux = new Object[5];
-            objAux[0] = fornecedor.getId();
+            Fornecedor fornecedorAux = new Fornecedor();
+            fornecedorAux.setId(fornecedor.getId());
+            fornecedorAux = (Fornecedor) ((ArrayList<?>) crudService.filter(fornecedorAux)).get(0);
 
-            fornecedorAux = (Fornecedor) ((ArrayList<?>) crudService.filter(objAux)).get(0);
-
-            setUpdatedFields(objAux, fornecedor, fornecedorAux);
-            crudService.update(objAux);
+            setUpdatedFields(fornecedor, fornecedorAux);
+            crudService.update(fornecedorAux);
 
             return ResponseEntity.ok().build();
         } catch(Exception e) {
@@ -101,23 +87,17 @@ public class FornecedorController {
             if(!accControlService.temPersmissao(fornecedor.getRequestUser().getId(), FUNC_CONST)) {
                 return ResponseEntity.ok("405");
             }
-            Object[] objAux = new Object[5];
-            objAux[0] = fornecedor.getId();
-            objAux[1] = fornecedor.getNome();
-            objAux[2] = fornecedor.getCnpj();
-            objAux[3] = fornecedor.getContato();
-            objAux[4] = fornecedor.getEndereco();
-            crudService.delete(objAux);
+            crudService.delete(fornecedor);
             return ResponseEntity.ok().build();
         } catch(Exception e) {
             return ResponseEntity.ok("500");
         }
     }
 
-    private void setUpdatedFields(Object[] objAux, Fornecedor fornecedorParam, Fornecedor fornecedorAux) {
-        objAux[1] = fornecedorParam.getNome() != null ? fornecedorParam.getNome() : fornecedorAux.getNome();
-        objAux[2] = fornecedorParam.getCnpj() != null ? fornecedorParam.getCnpj() : fornecedorAux.getCnpj();
-        objAux[3] = fornecedorParam.getContato() != null ? fornecedorParam.getContato() : fornecedorAux.getContato();
-        objAux[4] = fornecedorParam.getEndereco() != null ? fornecedorParam.getEndereco() : fornecedorAux.getEndereco();
+    private void setUpdatedFields(Fornecedor fornecedorParam, Fornecedor fornecedorAux) {
+        fornecedorAux.setNome(fornecedorParam.getNome() != null ? fornecedorParam.getNome() : fornecedorAux.getNome());
+        fornecedorAux.setCnpj(fornecedorParam.getCnpj() != null ? fornecedorParam.getCnpj() : fornecedorAux.getCnpj());
+        fornecedorAux.setContato(fornecedorParam.getContato() != null ? fornecedorParam.getContato() : fornecedorAux.getContato());
+        fornecedorAux.setEndereco(fornecedorParam.getEndereco() != null ? fornecedorParam.getEndereco() : fornecedorAux.getEndereco());
     }
 }

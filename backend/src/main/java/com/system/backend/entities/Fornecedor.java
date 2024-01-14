@@ -12,14 +12,10 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "FORNECEDORES")
-public class Fornecedor implements Serializable {
+public class Fornecedor extends EntidadeBase implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Column(name = "NOME")
     private String nome;
@@ -37,16 +33,6 @@ public class Fornecedor implements Serializable {
     private Usuario requestUser;
 
     public Fornecedor() {
-    }
-
-
-    public Long getId() {
-        return id;
-    }
-
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
 

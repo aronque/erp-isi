@@ -1,12 +1,14 @@
 package com.system.backend.services.impl;
 
 import com.system.backend.entities.Endereco;
+import com.system.backend.entities.EntidadeBase;
 import com.system.backend.repositories.EnderecoRepository;
 import com.system.backend.services.CRUDService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component("Endereco")
 public class EnderecoCRUDServiceImpl implements CRUDService {
@@ -16,65 +18,38 @@ public class EnderecoCRUDServiceImpl implements CRUDService {
     private EnderecoRepository repository;
 
     @Override
-    public Object create(Object[] obj) {
-        Endereco aux = new Endereco();
-        aux.setRua(obj[1] != null ? obj[1].toString() : null);
-        aux.setNumero(obj[2] != null ? obj[2].toString() : null);
-        aux.setBairro(obj[3] != null ? obj[3].toString() : null);
-        aux.setCidade(obj[4] != null ? obj[4].toString() : null);
-        aux.setEstado(obj[5] != null ? obj[5].toString() : null);
-        aux.setCep(obj[6] != null ? obj[6].toString() : null);
-
+    public EntidadeBase create(EntidadeBase obj) {
+        Endereco aux = (Endereco) obj;
         return repository.save(aux);
     }
 
     @Override
-    public void update(Object[] obj) {
-        Endereco aux = new Endereco();
-        aux.setId(obj[0] != null ? (Long) obj[0] : null);
-        aux.setRua(obj[1] != null ? obj[1].toString() : null);
-        aux.setNumero(obj[2] != null ? obj[2].toString() : null);
-        aux.setBairro(obj[3] != null ? obj[3].toString() : null);
-        aux.setCidade(obj[4] != null ? obj[4].toString() : null);
-        aux.setEstado(obj[5] != null ? obj[5].toString() : null);
-        aux.setCep(obj[6] != null ? obj[6].toString() : null);
+    public void update(EntidadeBase obj) {
+        Endereco aux = (Endereco) obj;
         if(repository.existsById(aux.getId())) {
             repository.save(aux);
-        }    }
-
-    @Override
-    public List<Endereco> filter(Object[] obj) {
-        Endereco aux = new Endereco();
-        aux.setId(obj[0] != null ? (Long) obj[0] : null);
-        aux.setRua(obj[1] != null ? obj[1].toString() : null);
-        aux.setNumero(obj[2] != null ? obj[2].toString() : null);
-        aux.setBairro(obj[3] != null ? obj[3].toString() : null);
-        aux.setCidade(obj[4] != null ? obj[4].toString() : null);
-        aux.setEstado(obj[5] != null ? obj[5].toString() : null);
-        aux.setCep(obj[6] != null ? obj[6].toString() : null);
-        return repository.findByCriteria(aux);
+        }
     }
 
     @Override
-    public List<Endereco> filterAll() {
-        return repository.findAll();
+    public List<EntidadeBase> filter(EntidadeBase obj) {
+        Endereco aux = (Endereco) obj;
+        return repository.findByCriteria(aux).stream().map(filtered -> (EntidadeBase) filtered).collect(Collectors.toList());
     }
 
     @Override
-    public void delete(Object[] obj) {
-        Endereco aux = new Endereco();
-        aux.setId(obj[0] != null ? (Long) obj[0] : null);
-        aux.setRua(obj[1] != null ? obj[1].toString() : null);
-        aux.setNumero(obj[2] != null ? obj[2].toString() : null);
-        aux.setBairro(obj[3] != null ? obj[3].toString() : null);
-        aux.setCidade(obj[4] != null ? obj[4].toString() : null);
-        aux.setEstado(obj[5] != null ? obj[5].toString() : null);
-        aux.setCep(obj[6] != null ? obj[6].toString() : null);
+    public List<EntidadeBase> filterAll() {
+        return repository.findAll().stream().map(filtered -> (EntidadeBase) filtered).collect(Collectors.toList());
+    }
+
+    @Override
+    public void delete(EntidadeBase obj) {
+        Endereco aux = (Endereco) obj;
         repository.delete(aux);
     }
 
     @Override
-    public Object filterAll(Object[] obj) {
+    public List<EntidadeBase> filterAll(EntidadeBase obj) {
         return null;
     }
 }

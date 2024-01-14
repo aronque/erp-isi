@@ -12,14 +12,10 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "PRODUTOS")
-public class Produto implements Serializable {
+public class Produto extends EntidadeBase implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Column(name = "NOME")
     private String nome;
@@ -38,16 +34,6 @@ public class Produto implements Serializable {
     private Usuario requestUser;
 
     public Produto(){
-    }
-
-
-    public Long getId() {
-        return id;
-    }
-
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
 
