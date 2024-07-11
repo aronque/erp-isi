@@ -6,7 +6,6 @@ import com.system.backend.services.CRUDService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.List;
 
 @Component("Pedido")
@@ -17,20 +16,14 @@ public class PedidoCRUDServiceImpl implements CRUDService {
     private PedidoRepository repository;
 
     @Override
-    public Object create(Object[] obj) {
+    public EntidadeBase create(EntidadeBase pedido) {
         Pedido aux = null;
 
-        if(obj[6].equals(PedidoFornecedor.class)) {
-            aux = new PedidoFornecedor();
-            aux.setFornecedor((Fornecedor) obj[5]);
+        if(pedido.getClass().equals(PedidoFornecedor.class)) {
+            aux = (PedidoFornecedor) pedido;
         } else {
-            aux = new PedidoSaidaEstoque();
+            aux = (PedidoSaidaEstoque) pedido;
         }
-
-        aux.addManyItems(obj[1] != null ? (List<ItemPedido>) obj[1] : null);
-        aux.setData(obj[2] != null ? (Date) obj[2] : null);
-        aux.setStatus(obj[3] != null ? (Pedido.Status) obj[3] : null);
-        aux.setUsuario(obj[4] != null ? (Usuario) obj[4] : null);
 
         setPedido(aux.getItems(), aux);
 
@@ -47,21 +40,14 @@ public class PedidoCRUDServiceImpl implements CRUDService {
     }
 
     @Override
-    public void update(Object[] obj) {
+    public void update(EntidadeBase pedido) {
         Pedido aux = null;
 
-        if(obj[6].equals(PedidoFornecedor.class)) {
-            aux = new PedidoFornecedor();
-            aux.setFornecedor((Fornecedor) obj[5]);
+        if(pedido.getClass().equals(PedidoFornecedor.class)) {
+            aux = (PedidoFornecedor) pedido;
         } else {
-            aux = new PedidoSaidaEstoque();
+            aux = (PedidoSaidaEstoque) pedido;
         }
-
-        aux.setId(obj[0] != null ? (Long) obj[0] : null);
-        aux.addManyItems(obj[1] != null ? (List<ItemPedido>) obj[1] : null);
-        aux.setData(obj[2] != null ? (Date) obj[2] : null);
-        aux.setStatus(obj[3] != null ? (Pedido.Status) obj[3] : null);
-        aux.setUsuario(obj[4] != null ? (Usuario) obj[4] : null);
 
         if(repository.existsById(aux.getId())) {
             repository.save(aux);
@@ -69,52 +55,41 @@ public class PedidoCRUDServiceImpl implements CRUDService {
     }
 
     @Override
-    public List<Pedido> filter(Object[] obj) {
+    public List<EntidadeBase> filter(EntidadeBase pedido) {
         Pedido aux = null;
 
-        if(obj[6].equals(PedidoFornecedor.class)) {
-            aux = new PedidoFornecedor();
-            aux.setFornecedor((Fornecedor) obj[5]);
+        if(pedido.getClass().equals(PedidoFornecedor.class)) {
+            aux = (PedidoFornecedor) pedido;
         } else {
-            aux = new PedidoSaidaEstoque();
-        }
-
-        aux.setId(obj[0] != null ? (Long) obj[0] : null);
-        aux.addManyItems(obj[1] != null ? (List<ItemPedido>) obj[1] : null);
-        aux.setData(obj[2] != null ? (Date) obj[2] : null);
-        aux.setStatus(obj[3] != null ? (Pedido.Status) obj[3] : null);
-        aux.setUsuario(obj[4] != null ? (Usuario) obj[4] : null);
-
-        return repository.findBy(aux);
-    }
-
-    @Override
-    public List<Pedido> filterAll(Object[] obj) {
-        Pedido aux = null;
-
-        if(obj[0].equals(PedidoFornecedor.class)) {
-            aux = new PedidoFornecedor();
-        } else {
-            aux = new PedidoSaidaEstoque();
+            aux = (PedidoSaidaEstoque) pedido;
         }
 
         return repository.findBy(aux);
     }
 
     @Override
-    public void delete(Object[] obj) {
+    public List<EntidadeBase> filterAll(EntidadeBase pedido) {
         Pedido aux = null;
-        if(obj[6].equals(PedidoFornecedor.class)) {
-            aux = new PedidoFornecedor();
+
+        if(pedido.getClass().equals(PedidoFornecedor.class)) {
+            aux = (PedidoFornecedor) pedido;
         } else {
-            aux = new PedidoSaidaEstoque();
+            aux = (PedidoSaidaEstoque) pedido;
         }
 
-        aux.setId(obj[0] != null ? (Long) obj[0] : null);
-        aux.addManyItems(obj[1] != null ? (List<ItemPedido>) obj[1] : null);
-        aux.setData(obj[2] != null ? (Date) obj[2] : null);
-        aux.setStatus(obj[3] != null ? (Pedido.Status) obj[3] : null);
-        aux.setUsuario(obj[4] != null ? (Usuario) obj[4] : null);
+        return repository.findBy(aux);
+    }
+
+    @Override
+    public void delete(EntidadeBase pedido) {
+        Pedido aux = null;
+
+        if(pedido.getClass().equals(PedidoFornecedor.class)) {
+            aux = (PedidoFornecedor) pedido;
+        } else {
+            aux = (PedidoSaidaEstoque) pedido;
+        }
+
         repository.delete(aux);
     }
 
@@ -125,7 +100,7 @@ public class PedidoCRUDServiceImpl implements CRUDService {
     }
 
     @Override
-    public Object filterAll() {
+    public List<EntidadeBase> filterAll() {
         return null;
     }
 }

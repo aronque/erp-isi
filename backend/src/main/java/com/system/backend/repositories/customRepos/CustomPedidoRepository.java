@@ -1,5 +1,6 @@
 package com.system.backend.repositories.customRepos;
 
+import com.system.backend.entities.EntidadeBase;
 import com.system.backend.entities.Pedido;
 
 import java.util.List;
@@ -17,5 +18,5 @@ public interface CustomPedidoRepository {
      * @param pedido Objeto pedido com dados fornecidos para filtro customizado
      * @return List<Pedido> Lista contendo os pedidos encontrados com base nos dados fornecidos
      */
-    public List<Pedido> findBy(Pedido pedido);
+    public List<EntidadeBase> findBy(Pedido pedido);
 }

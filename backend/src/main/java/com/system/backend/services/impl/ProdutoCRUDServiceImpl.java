@@ -1,5 +1,6 @@
 package com.system.backend.services.impl;
 
+import com.system.backend.entities.EntidadeBase;
 import com.system.backend.entities.Fornecedor;
 import com.system.backend.entities.Produto;
 import com.system.backend.repositories.ProdutoRepository;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component("Produto")
 public class ProdutoCRUDServiceImpl implements CRUDService {
@@ -17,57 +19,35 @@ public class ProdutoCRUDServiceImpl implements CRUDService {
     private ProdutoRepository repository;
 
     @Override
-    public Object create(Object[] obj) {
-        Produto aux = new Produto();
-        aux.setNome(obj[1] != null ? obj[1].toString() : null);
-        aux.setFornecedor(obj[2] != null ? (Fornecedor) obj[2] : null);
-        aux.setQuantidade(obj[3] != null ? (Integer) obj[3] : null);
-        aux.setPreco(obj[4] != null ? (Double) obj[4] : null);
-        return repository.save(aux);
+    public EntidadeBase create(EntidadeBase produto) {
+
+        return repository.save((Produto) produto);
     }
 
     @Override
-    public void update(Object[] obj) {
-        Produto aux = new Produto();
-        aux.setId(obj[0] != null ? (Long) obj[0] : null);
-        aux.setNome(obj[1] != null ? obj[1].toString() : null);
-        aux.setFornecedor(obj[2] != null ? (Fornecedor) obj[2] : null);
-        aux.setQuantidade(obj[3] != null ? (Integer) obj[3] : null);
-        aux.setPreco(obj[4] != null ? (Double) obj[4] : null);
-        if(repository.existsById(aux.getId())) {
-            repository.save(aux);
+    public void update(EntidadeBase produto) {
+        if(repository.existsById(produto.getId())) {
+            repository.save((Produto) produto);
         }
     }
 
     @Override
-    public List<Produto> filter(Object[] obj) {
-        Produto aux = new Produto();
-        aux.setId(obj[0] != null ? (Long) obj[0] : null);
-        aux.setNome(obj[1] != null ? obj[1].toString() : null);
-        aux.setFornecedor(obj[2] != null ? (Fornecedor) obj[2] : null);
-        aux.setQuantidade(obj[3] != null ? (Integer) obj[3] : null);
-        aux.setPreco(obj[4] != null ? (Double) obj[4] : null);
-        return repository.findBy(aux);
+    public List<EntidadeBase> filter(EntidadeBase produto) {
+        return repository.findBy((Produto) produto);
     }
 
     @Override
-    public List<Produto> filterAll() {
-        return repository.findAll();
+    public List<EntidadeBase> filterAll() {
+        return repository.findAll().stream().map(filtered -> (EntidadeBase) filtered).collect(Collectors.toList());
     }
 
     @Override
-    public void delete(Object[] obj) {
-        Produto aux = new Produto();
-        aux.setId(obj[0] != null ? (Long) obj[0] : null);
-        aux.setNome(obj[1] != null ? obj[1].toString() : null);
-        aux.setFornecedor(obj[2] != null ? (Fornecedor) obj[2] : null);
-        aux.setQuantidade(obj[3] != null ? (Integer) obj[3] : null);
-        aux.setPreco(obj[4] != null ? (Double) obj[4] : null);
-        repository.delete(aux);
+    public void delete(EntidadeBase produto) {
+        repository.delete((Produto) produto);
     }
 
     @Override
-    public Object filterAll(Object[] obj) {
+    public List<EntidadeBase> filterAll(EntidadeBase produto) {
         return null;
     }
 }

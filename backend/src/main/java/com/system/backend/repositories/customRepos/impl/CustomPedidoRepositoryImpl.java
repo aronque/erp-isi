@@ -1,5 +1,6 @@
 package com.system.backend.repositories.customRepos.impl;
 
+import com.system.backend.entities.EntidadeBase;
 import com.system.backend.entities.Pedido;
 import com.system.backend.entities.PedidoFornecedor;
 import com.system.backend.repositories.customRepos.CustomPedidoRepository;
@@ -15,7 +16,7 @@ public class CustomPedidoRepositoryImpl implements CustomPedidoRepository {
     private EntityManager em;
 
     @Override
-    public List<Pedido> findBy(Pedido pedido) {
+    public List<EntidadeBase> findBy(Pedido pedido) {
         StringBuilder sb = new StringBuilder("FROM Pedido p ");
         Query query;
 
@@ -28,7 +29,7 @@ public class CustomPedidoRepositoryImpl implements CustomPedidoRepository {
 
         List<?> result = query.getResultList();
 
-        return (List<Pedido>) result;
+        return (List<EntidadeBase>) result;
     }
 
     private String setupQuery(Pedido pedido, StringBuilder sb) {

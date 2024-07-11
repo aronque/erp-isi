@@ -37,14 +37,9 @@ public class PedidoFornecedorController {
             if(!accControlService.temPersmissao(pedido.getUsuario().getId(), FUNC_CONST)) {
                 return ResponseEntity.ok("405");
             }
-            Object[] objAux = new Object[7];
-            objAux[1] = pedido.getItems();
-            objAux[2] = Date.from(Instant.now());
-            objAux[3] = pedido.getStatus();
-            objAux[4] = pedido.getUsuario();
-            objAux[5] = pedido.getFornecedor();
-            objAux[6] = PedidoFornecedor.class;
-            crudService.create(objAux);
+
+            pedido.setData(Date.from(Instant.now()));
+            crudService.create(pedido);
             return ResponseEntity.ok().build();
         } catch(Exception e) {
             return ResponseEntity.ok("500");
@@ -53,10 +48,9 @@ public class PedidoFornecedorController {
 
     @GetMapping("")
     public ResponseEntity<List<Pedido>> findAll() {
-        Object[] objAux = new Object[1];
-        objAux[0] = PedidoFornecedor.class;
+        PedidoFornecedor objAux = new PedidoFornecedor();
 
-        return ResponseEntity.ok((List<Pedido>) crudService.filterAll(objAux));
+        return ResponseEntity.ok(crudService.filterAll(objAux).stream().map(filtered -> (PedidoFornecedor) filtered).collect(Collectors.toList()));
     }
 
     @PostMapping("/findByCriteria")
@@ -74,14 +68,13 @@ public class PedidoFornecedorController {
             if(!accControlService.temPersmissao(pedido.getUsuario().getId(), FUNC_CONST)) {
                 return ResponseEntity.ok("405");
             }
-            PedidoFornecedor pedidoAux;
-            Object[] objAux = new Object[7];
-            objAux[0] = pedido.getId();
+            PedidoFornecedor pedidoAux = new PedidoFornecedor();
+            pedidoAux.setId(pedido.getId());
 
-            pedidoAux = (PedidoFornecedor) ((ArrayList) crudService.filter(objAux)).get(0);
+            pedidoAux = (PedidoFornecedor) ((ArrayList) crudService.filter(pedido)).get(0);
 
-            setUpdatedFields(objAux, pedido, pedidoAux);
-            crudService.update(objAux);
+            setUpdatedFields(pedido, pedidoAux);
+            crudService.update(pedidoAux);
 
             return ResponseEntity.ok().build();
         } catch(Exception e) {
@@ -96,27 +89,18 @@ public class PedidoFornecedorController {
             if(!accControlService.temPersmissao(pedido.getUsuario().getId(), FUNC_CONST)) {
                 return ResponseEntity.ok("405");
             }
-            Object[] objAux = new Object[7];
-            objAux[0] = pedido.getId();
-            objAux[1] = pedido.getItems();
-            objAux[2] = pedido.getData();
-            objAux[3] = pedido.getStatus();
-            objAux[4] = pedido.getUsuario();
-            objAux[5] = pedido.getFornecedor();
-            objAux[6] = PedidoFornecedor.class;
-            crudService.delete(objAux);
+            crudService.delete(pedido);
             return ResponseEntity.ok().build();
         } catch(Exception e) {
             return ResponseEntity.ok("500");
         }
     }
 
-    private void setUpdatedFields(Object[] objAux, PedidoFornecedor pedidoParam, PedidoFornecedor pedidoAux) {
-        objAux[1] = pedidoParam.getItems() != null ? pedidoParam.getItems() : pedidoAux.getItems();
-        objAux[2] = pedidoParam.getData() != null ? pedidoParam.getData() : pedidoAux.getData();
-        objAux[3] = pedidoParam.getStatus() != null ? pedidoParam.getStatus() : pedidoAux.getStatus();
-        objAux[4] = pedidoAux.getUsuario();
-        objAux[5] = pedidoParam.getFornecedor() != null ? pedidoParam.getFornecedor() : pedidoAux.getFornecedor();
-        objAux[6] = pedidoAux.getInstancia();
+    private void setUpdatedFields (PedidoFornecedor pedidoParam, PedidoFornecedor pedidoAux) {
+        pedidoAux.setItens(pedidoParam.getItems() != null ? pedidoParam.getItems() : pedidoAux.getItems());
+        pedidoAux.setData(pedidoParam.getData() != null ? pedidoParam.getData() : pedidoAux.getData());
+        pedidoAux.setStatus(pedidoParam.getStatus() != null ? pedidoParam.getStatus() : pedidoAux.getStatus());
+        pedidoAux.setUsuario(pedidoAux.getUsuario());
+        pedidoAux.setFornecedor(pedidoParam.getFornecedor() != null ? pedidoParam.getFornecedor() : pedidoAux.getFornecedor());
     }
 }

@@ -13,6 +13,7 @@ import java.sql.Date;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Classe controladora de requests relacionados a entidade pedidos de retirada de produtos (estoque)
@@ -30,13 +31,9 @@ public class PedidoSaidaEstoqueController {
     @PostMapping("/insert")
     public ResponseEntity createPedido(@RequestBody PedidoSaidaEstoque pedido) {
         try {
-            Object[] objAux = new Object[7];
-            objAux[1] = pedido.getItems();
-            objAux[2] = Date.from(Instant.now());
-            objAux[3] = pedido.getStatus();
-            objAux[4] = pedido.getUsuario();
-            objAux[6] = PedidoSaidaEstoque.class;
-            crudService.create(objAux);
+
+            pedido.setData(Date.from(Instant.now()));
+            crudService.create(pedido);
             return ResponseEntity.ok().build();
         } catch(Exception e) {
             return ResponseEntity.ok("500");
@@ -45,36 +42,26 @@ public class PedidoSaidaEstoqueController {
 
     @GetMapping("")
     public ResponseEntity<List<Pedido>> findAll() {
-        Object[] objAux = new Object[1];
-        objAux[0] = PedidoSaidaEstoque.class;
-
-        return ResponseEntity.ok((List<Pedido>) crudService.filterAll(objAux));
+        PedidoSaidaEstoque objAux = new PedidoSaidaEstoque();
+        return ResponseEntity.ok(crudService.filterAll(objAux).stream().map(filtered -> (PedidoSaidaEstoque) filtered).collect(Collectors.toList()));
     }
 
     @PostMapping("/findByCriteria")
     public ResponseEntity<List<Pedido>> findByCriteria(@RequestBody PedidoSaidaEstoque pedido) {
-        Object[] objAux = new Object[7];
-        objAux[0] = pedido.getId();
-        objAux[1] = pedido.getItems();
-        objAux[2] = pedido.getData();
-        objAux[3] = pedido.getStatus();
-        objAux[4] = pedido.getUsuario();
-        objAux[6] = PedidoSaidaEstoque.class;
-        return ResponseEntity.ok((List<Pedido>) crudService.filter(objAux));
+
+        return ResponseEntity.ok(crudService.filterAll(pedido).stream().map(filtered -> (PedidoSaidaEstoque) filtered).collect(Collectors.toList()));
     }
 
     @PutMapping("/update")
     public ResponseEntity updatePedido(@RequestBody PedidoSaidaEstoque pedido) {
         try {
-            PedidoSaidaEstoque pedidoAux;
-            Object[] objAux = new Object[7];
-            objAux[0] = pedido.getId();
-            objAux[6] = PedidoSaidaEstoque.class;
+            PedidoSaidaEstoque pedidoAux = new PedidoSaidaEstoque();
+            pedidoAux.setId(pedido.getId());
 
-            pedidoAux = (PedidoSaidaEstoque) ((ArrayList<?>) crudService.filter(objAux)).get(0);
+            pedidoAux = (PedidoSaidaEstoque) ((ArrayList<?>) crudService.filter(pedidoAux)).get(0);
 
-            setUpdatedFields(objAux, pedido, pedidoAux);
-            crudService.update(objAux);
+            setUpdatedFields(pedido, pedidoAux);
+            crudService.update(pedidoAux);
 
             return ResponseEntity.ok().build();
         } catch(Exception e) {
@@ -85,35 +72,27 @@ public class PedidoSaidaEstoqueController {
     @DeleteMapping("/delete")
     public ResponseEntity delete(@RequestBody PedidoSaidaEstoque pedido) {
         try {
-            Object[] objAux = new Object[7];
-            objAux[0] = pedido.getId();
-            objAux[1] = pedido.getItems();
-            objAux[2] = pedido.getData();
-            objAux[3] = pedido.getStatus();
-            objAux[4] = pedido.getUsuario();
-            objAux[6] = PedidoSaidaEstoque.class;
-            crudService.delete(objAux);
+            crudService.delete(pedido);
             return ResponseEntity.ok().build();
         } catch(Exception e) {
             return ResponseEntity.ok("500");
         }
     }
 
-    private void setUpdatedFields(Object[] objAux, PedidoSaidaEstoque pedidoParam, PedidoSaidaEstoque pedidoAux) {
+    private void setUpdatedFields(PedidoSaidaEstoque pedidoParam, PedidoSaidaEstoque pedidoAux) {
 
         if(pedidoParam.getItems() != null && !pedidoParam.getItems().isEmpty()) {
 
             setPedidoInItems(pedidoParam.getItems(), pedidoParam);
-            objAux[1] = pedidoParam.getItems();
+            pedidoAux.setItens(pedidoParam.getItems());
         } else {
             setPedidoInItems(pedidoAux.getItems(), pedidoAux);
-            objAux[1] = pedidoAux.getItems();
+            pedidoAux.setItens(pedidoAux.getItems());
         }
 
-        objAux[2] = pedidoParam.getData() != null ? pedidoParam.getData() : pedidoAux.getData();
-        objAux[3] = pedidoParam.getStatus() != null ? pedidoParam.getStatus() : pedidoAux.getStatus();
-        objAux[4] = pedidoAux.getUsuario();
-        objAux[6] = pedidoAux.getInstancia();
+        pedidoAux.setData(pedidoParam.getData() != null ? pedidoParam.getData() : pedidoAux.getData());
+        pedidoAux.setStatus(pedidoParam.getStatus() != null ? pedidoParam.getStatus() : pedidoAux.getStatus());
+        pedidoAux.setUsuario(pedidoAux.getUsuario());
     }
 
     private void setPedidoInItems(List<ItemPedido> items, Pedido pedido) {

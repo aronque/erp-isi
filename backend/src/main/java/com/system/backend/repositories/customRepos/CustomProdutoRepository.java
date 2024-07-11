@@ -1,5 +1,6 @@
 package com.system.backend.repositories.customRepos;
 
+import com.system.backend.entities.EntidadeBase;
 import com.system.backend.entities.Produto;
 
 import java.util.List;
@@ -17,5 +18,5 @@ public interface CustomProdutoRepository {
      * @param produto Objeto produto com dados fornecidos para filtro customizado
      * @return List<Produto> Lista contendo os produtos encontrados com base nos dados fornecidos
      */
-    public List<Produto> findBy(Produto produto);
+    public List<EntidadeBase> findBy(Produto produto);
 }

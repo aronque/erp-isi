@@ -1,5 +1,6 @@
 package com.system.backend.controllers;
 
+import com.system.backend.entities.Fornecedor;
 import com.system.backend.entities.Produto;
 import com.system.backend.services.CRUDService;
 import com.system.backend.services.ControleAcessoService;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Classe controladora de requests relacionados a entidade produtos
@@ -33,12 +35,8 @@ public class ProdutoController {
             if(!accControlService.temPersmissao(produto.getRequestUser().getId(), FUNC_CONST)) {
                 return ResponseEntity.ok("405");
             }
-            Object[] objAux = new Object[5];
-            objAux[1] = produto.getNome();
-            objAux[2] = produto.getFornecedor();
-            objAux[3] = produto.getQuantidade();
-            objAux[4] = produto.getPreco();
-            crudService.create(objAux);
+
+            crudService.create(produto);
             return ResponseEntity.ok().build();
         } catch(Exception e) {
             return ResponseEntity.ok("500");
@@ -47,18 +45,16 @@ public class ProdutoController {
 
     @GetMapping("")
     public ResponseEntity<List<Produto>> findAll() {
-        return ResponseEntity.ok((List<Produto>) crudService.filterAll());
+        return ResponseEntity.ok(crudService.filterAll().stream().map(filtered -> (Produto) filtered).collect(Collectors.toList()));
     }
 
     @PostMapping("/findByCriteria")
-    public ResponseEntity<List<Produto>> findByCriteria(@RequestBody Produto produto) {
-        Object[] objAux = new Object[5];
-        objAux[0] = produto.getId();
-        objAux[1] = produto.getNome();
-        objAux[2] = produto.getFornecedor();
-        objAux[3] = produto.getQuantidade();
-        objAux[4] = produto.getPreco();
-        return ResponseEntity.ok((List<Produto>) crudService.filter(objAux));
+    public ResponseEntity<List<?>> findByCriteria(@RequestBody Produto produto) {
+        try {
+            return ResponseEntity.ok(crudService.filter(produto).stream().map(filtered -> (Produto) filtered).collect(Collectors.toList()));
+        } catch(Exception e) {
+            return ResponseEntity.ok(List.of("500"));
+        }
     }
 
     @PutMapping("/update")
@@ -67,14 +63,12 @@ public class ProdutoController {
             if(!accControlService.temPersmissao(produto.getRequestUser().getId(), FUNC_CONST)) {
                 return ResponseEntity.ok("405");
             }
-            Produto produtoAux;
-            Object[] objAux = new Object[5];
-            objAux[0] = produto.getId();
+            Produto produtoAux = new Produto();
+            produtoAux.setId(produto.getId());
+            produtoAux = (Produto) ((ArrayList<?>) crudService.filter(produto)).get(0);
 
-            produtoAux = (Produto) ((ArrayList<?>) crudService.filter(objAux)).get(0);
-
-            setUpdatedFields(objAux, produto, produtoAux);
-            crudService.update(objAux);
+            setUpdatedFields(produto, produtoAux);
+            crudService.update(produtoAux);
 
             return ResponseEntity.ok().build();
         } catch(Exception e) {
@@ -89,23 +83,17 @@ public class ProdutoController {
             if(!accControlService.temPersmissao(produto.getRequestUser().getId(), FUNC_CONST)) {
                 return ResponseEntity.ok("405");
             }
-            Object[] objAux = new Object[5];
-            objAux[0] = produto.getId();
-            objAux[1] = produto.getNome();
-            objAux[2] = produto.getFornecedor();
-            objAux[3] = produto.getQuantidade();
-            objAux[4] = produto.getPreco();
-            crudService.delete(objAux);
+            crudService.delete(produto);
             return ResponseEntity.ok().build();
         } catch(Exception e) {
             return ResponseEntity.ok("500");
         }
     }
 
-    private void setUpdatedFields(Object[] objAux, Produto produtoParam, Produto produtoAux) {
-        objAux[1] = produtoParam.getNome() != null ? produtoParam.getNome() : produtoAux.getNome();
-        objAux[2] = produtoParam.getFornecedor() != null ? produtoParam.getFornecedor() : produtoAux.getFornecedor();
-        objAux[3] = produtoParam.getQuantidade() != null ? produtoParam.getQuantidade() : produtoAux.getQuantidade();
-        objAux[4] = produtoParam.getPreco() != null ? produtoParam.getPreco() : produtoAux.getPreco();
+    private void setUpdatedFields(Produto produtoParam, Produto produtoAux) {
+        produtoAux.setNome(produtoParam.getNome() != null ? produtoParam.getNome() : produtoAux.getNome());
+        produtoAux.setFornecedor(produtoParam.getFornecedor() != null ? produtoParam.getFornecedor() : produtoAux.getFornecedor());
+        produtoAux.setQuantidade(produtoParam.getQuantidade() != null ? produtoParam.getQuantidade() : produtoAux.getQuantidade());
+        produtoAux.setPreco(produtoParam.getPreco() != null ? produtoParam.getPreco() : produtoAux.getPreco());
     }
 }

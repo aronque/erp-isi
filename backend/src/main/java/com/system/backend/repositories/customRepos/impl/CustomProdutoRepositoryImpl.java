@@ -1,5 +1,6 @@
 package com.system.backend.repositories.customRepos.impl;
 
+import com.system.backend.entities.EntidadeBase;
 import com.system.backend.entities.Produto;
 import com.system.backend.repositories.customRepos.CustomProdutoRepository;
 import jakarta.persistence.EntityManager;
@@ -14,7 +15,7 @@ public class CustomProdutoRepositoryImpl implements CustomProdutoRepository {
     private EntityManager em;
 
     @Override
-    public List<Produto> findBy(Produto produto) {
+    public List<EntidadeBase> findBy(Produto produto) {
         StringBuilder sb = new StringBuilder("FROM Produto p ");
         Query query;
 
@@ -27,7 +28,7 @@ public class CustomProdutoRepositoryImpl implements CustomProdutoRepository {
 
         List<?> result = query.getResultList();
 
-        return (List<Produto>) result;
+        return (List<EntidadeBase>) result;
     }
 
     private String setupQuery(Produto produto, StringBuilder sb) {

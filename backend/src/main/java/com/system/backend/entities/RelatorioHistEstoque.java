@@ -1,5 +1,6 @@
 package com.system.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -15,6 +16,7 @@ public class RelatorioHistEstoque extends Relatorio {
     private static final String PATH_XLS = "\\src\\main\\resources\\tmp\\hist_estoque.xlsx";
     private static final String VW_NAME = "VW_HIST_ESTOQUE";
 
+    @JsonCreator
     public RelatorioHistEstoque() {
         setSht(getWb().createSheet("Hist_Estoque"));
         createHeader();

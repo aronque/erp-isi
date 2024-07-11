@@ -3,7 +3,13 @@ package com.system.backend.entities;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+<<<<<<< Updated upstream
 
+=======
+import jakarta.persistence.MappedSuperclass;
+
+@MappedSuperclass
+>>>>>>> Stashed changes
 public class EntidadeBase {
 
     @Id

@@ -1,5 +1,6 @@
 package com.system.backend.repositories.customRepos;
 
+import com.system.backend.entities.EntidadeBase;
 import com.system.backend.entities.Fornecedor;
 
 import java.util.List;
@@ -17,5 +18,5 @@ public interface CustomFornecedorRepository {
      * @param fornecedor Objeto fornecedor com dados fornecidos para filtro customizado
      * @return List<Fornecedor> Lista contendo os fornecedores encontrados com base nos dados fornecidos
      */
-    public List<Fornecedor> findBy(Fornecedor fornecedor);
+    public List<EntidadeBase> findBy(Fornecedor fornecedor);
 }
