@@ -6,7 +6,7 @@
 
 ## Backend:
 Obter o Docker Desktop (em caso de sistema Windows) ou a engine do Docker em seu sistema. Os passos para instalação se encontram em https://docs.docker.com/engine/install/.
-Com o Docker devidamente instalado, deve-se rodar o comando **docker-compose up --build**
+Com o Docker devidamente instalado, deve-se rodar o comando **docker-compose up --build**. 
 Após finalização da configuração dos containeres, o backend e banco de dados já estarão disponíveis para utilização em host local, através da porta **8080**
 
 ## Frontend:
